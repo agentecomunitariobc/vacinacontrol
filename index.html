@@ -5,588 +5,151 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <title>VacinaControl · Sistema Multi-ACS</title>
 
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22VacinaControl%22%2C%22short_name%22%3A%22VacinaControl%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230a0f1e%22%2C%22theme_color%22%3A%22%23059669%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20192%20192'%3E%253Ccircle%20cx%3D'96'%20cy%3D'96'%20r%3D'88'%20fill%3D'%23059669'%2F%3E%253Ctext%20x%3D'96'%20y%3D'130'%20font-size%3D'100'%20text-anchor%3D'middle'%3E%F0%9F%92%89%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
-
-  <!-- Theme & Status Bar -->
+  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22VacinaControl%22%2C%22short_name%22%3A%22VacinaControl%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230a0f1e%22%2C%22theme_color%22%3A%22%23059669%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20192%20192'%3E%253Cdefs%3E%253ClinearGradient%20id%3D'g'%20x1%3D'0%25'%20y1%3D'0%25'%20x2%3D'100%25'%20y2%3D'100%25'%3E%253Cstop%20offset%3D'0%25'%20stop-color%3D'%2523059669'%2F%3E%253Cstop%20offset%3D'100%25'%20stop-color%3D'%252334d399'%2F%3E%253C%2FlinearGradient%3E%253C%2Fdefs%3E%253Ccircle%20cx%3D'96'%20cy%3D'96'%20r%3D'88'%20fill%3D'url(%2523g)'%2F%3E%253Cpath%20d%3D'M96%2048c-6%200-11%204-13%2010h-8c-3%200-5%202-5%205v10c0%203%202%205%205%205h8v6h-8c-3%200-5%202-5%205v10c0%203%202%205%205%205h8c2%206%207%2010%2013%2010s11-4%2013-10h12c3%200%205-2%205-5v-10c0-3-2-5-5-5h-12v-6h12c3%200%205-2%205-5v-10c0-3-2-5-5-5h-12c-2-6-7-10-13-10zm0%208c3%200%206%202%207%205h-14c1-3%204-5%207-5zm-16%2013h32v6h-32v-6zm16%2019c3%200%206%202%207%205h-14c1-3%204-5%207-5zm-16%2013h32v6h-32v-6z'%20fill%3D'%2523fff'%2F%3E%253Cpath%20d%3D'M72%20144c0-13%2010-24%2024-24s24%2011%2024%2024'%20fill%3D'none'%20stroke%3D'%2523fff'%20stroke-width%3D'6'%20stroke-linecap%3D'round'%2F%3E%253C%2Fsvg%3E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
   <meta name="theme-color" content="#059669">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23059669'/%3E%3Cstop offset='100%25' stop-color='%2334d399'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='96' cy='96' r='88' fill='url(%23g)'/%3E%3Cpath d='M96 48c-6 0-11 4-13 10h-8c-3 0-5 2-5 5v10c0 3 2 5 5 5h8v6h-8c-3 0-5 2-5 5v10c0 3 2 5 5 5h8c2 6 7 10 13 10s11-4 13-10h12c3 0 5-2 5-5v-10c0-3-2-5-5-5h-12v-6h12c3 0 5-2 5-5v-10c0-3-2-5-5-5h-12c-2-6-7-10-13-10zm0 8c3 0 6 2 7 5h-14c1-3 4-5 7-5zm-16 13h32v6h-32v-6zm16 19c3 0 6 2 7 5h-14c1-3 4-5 7-5zm-16 13h32v6h-32v-6z' fill='%23fff'/%3E%3Cpath d='M72 144c0-13 10-24 24-24s24 11 24 24' fill='none' stroke='%23fff' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
 
-  <!-- Apple Touch Icons -->
-  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Ccircle cx='96' cy='96' r='88' fill='%23059669'/%3E%3Ctext x='96' y='130' font-size='100' text-anchor='middle'%3E💉%3C/text%3E%3C/svg%3E">
-
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <!-- External libs -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.6.0/jspdf.plugin.autotable.min.js"></script>
-
-  <!-- Firebase SDKs (compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --g: #059669;
-      --gd: #047857;
-      --gl: #ecfdf5;
-      --red: #dc2626;
-      --redl: #fee2e2;
-      --blue: #2563eb;
-      --bluel: #dbeafe;
-      --indigo: #4f46e5;
-      --indigol: #e0e7ff;
-      --s50: #f8fafc;
-      --s100: #f1f5f9;
-      --s200: #e2e8f0;
-      --s300: #cbd5e1;
-      --s400: #94a3b8;
-      --s500: #64748b;
-      --s600: #475569;
-      --s700: #334155;
-      --s800: #1e293b;
-      --s900: #0f172a;
-      --r: 8px;
-      --rl: 14px;
-      --rxl: 20px;
+      --g: #059669; --gd: #047857; --gl: #ecfdf5; --red: #dc2626; --redl: #fee2e2;
+      --blue: #2563eb; --bluel: #dbeafe; --indigo: #4f46e5; --indigol: #e0e7ff;
+      --s50: #f8fafc; --s100: #f1f5f9; --s200: #e2e8f0; --s300: #cbd5e1;
+      --s400: #94a3b8; --s500: #64748b; --s600: #475569; --s700: #334155;
+      --s800: #1e293b; --s900: #0f172a; --r: 8px; --rl: 14px; --rxl: 20px;
       --sh: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
     }
+    body { font-family: 'Syne', sans-serif; background: var(--s50); color: var(--s800); font-size: 14px; min-height: 100vh; }
 
-    body {
-      font-family: 'Syne', sans-serif;
-      background: var(--s50);
-      color: var(--s800);
-      font-size: 14px;
-      min-height: 100vh;
-    }
-
-    /* ===== LOGIN SCREEN ===== */
-    #loginScreen {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #0a0f1e 0%, #0d2137 40%, #0a3d2b 100%);
-    }
-
-    .login-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      max-width: 960px;
-      width: 100%;
-      margin: 20px;
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 28px;
-      overflow: hidden;
-      box-shadow: 0 40px 120px rgba(0,0,0,.5);
-    }
-
-    .login-brand {
-      background: linear-gradient(135deg, rgba(5,150,105,.3), rgba(4,120,87,.1));
-      padding: 52px 44px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .login-title {
-      font-size: 32px;
-      font-weight: 800;
-      color: #fff;
-      line-height: 1.1;
-      margin-bottom: 12px;
-    }
-
+    #loginScreen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0a0f1e 0%, #0d2137 40%, #0a3d2b 100%); }
+    .login-grid { display: grid; grid-template-columns: 1fr 1fr; max-width: 960px; width: 100%; margin: 20px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08); border-radius: 28px; overflow: hidden; box-shadow: 0 40px 120px rgba(0,0,0,.5); }
+    .login-brand { background: linear-gradient(135deg, rgba(5,150,105,.3), rgba(4,120,87,.1)); padding: 52px 44px; display: flex; flex-direction: column; justify-content: center; }
+    .login-title { font-size: 32px; font-weight: 800; color: #fff; line-height: 1.1; margin-bottom: 12px; }
     .login-title span { color: #34d399; }
-    
-    .login-desc {
-      font-size: 15px;
-      color: rgba(255,255,255,.5);
-      line-height: 1.6;
-      margin-bottom: 28px;
-    }
-
-    .login-form-side {
-      padding: 52px 44px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .login-form-title {
-      font-size: 22px;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 6px;
-    }
-
-    .login-form-sub {
-      font-size: 13px;
-      color: rgba(255,255,255,.4);
-      margin-bottom: 32px;
-    }
-
-    .login-users-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 24px;
-      max-height: 340px;
-      overflow-y: auto;
-    }
-
-    .user-card {
-      background: rgba(255,255,255,.05);
-      border: 1.5px solid rgba(255,255,255,.1);
-      border-radius: 14px;
-      padding: 14px 12px;
-      cursor: pointer;
-      transition: all .2s;
-      text-align: center;
-      position: relative;
-    }
-
+    .login-desc { font-size: 15px; color: rgba(255,255,255,.5); line-height: 1.6; margin-bottom: 28px; }
+    .login-form-side { padding: 52px 44px; display: flex; flex-direction: column; justify-content: center; }
+    .login-form-title { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .login-form-sub { font-size: 13px; color: rgba(255,255,255,.4); margin-bottom: 32px; }
+    .login-users-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; max-height: 340px; overflow-y: auto; }
+    .user-card { background: rgba(255,255,255,.05); border: 1.5px solid rgba(255,255,255,.1); border-radius: 14px; padding: 14px 12px; cursor: pointer; transition: all .2s; text-align: center; position: relative; }
     .user-card:hover { background: rgba(5,150,105,.15); }
-    
-    .user-card.selected {
-      background: rgba(5,150,105,.2);
-      border-color: #34d399;
-    }
-
-    .user-avatar {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--g), var(--gd));
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 15px;
-      margin: 0 auto 8px;
-    }
-
+    .user-card.selected { background: rgba(5,150,105,.2); border-color: #34d399; }
+    .first-access-badge { position: absolute; top: 6px; right: 6px; background: #f59e0b; color: #000; font-size: 9px; font-weight: 700; border-radius: 100px; padding: 2px 7px; text-transform: uppercase; }
+    .user-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--g), var(--gd)); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; margin: 0 auto 8px; }
     .user-name { font-size: 12px; font-weight: 600; color: #fff; }
     .user-area { font-size: 11px; color: rgba(255,255,255,.4); margin-top: 2px; }
-
     .pin-inputs { display: flex; gap: 10px; justify-content: center; }
-    
-    .pin-input {
-      width: 52px;
-      height: 56px;
-      border-radius: 12px;
-      border: 1.5px solid rgba(255,255,255,.15);
-      background: rgba(255,255,255,.06);
-      color: #fff;
-      font-size: 22px;
-      font-weight: 700;
-      text-align: center;
-      outline: none;
-    }
-
-    .pin-input:focus {
-      border-color: #34d399;
-      background: rgba(52,211,153,.1);
-    }
-
-    .btn-login {
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #059669, #047857);
-      color: #fff;
-      font-size: 15px;
-      font-weight: 700;
-      border: none;
-      cursor: pointer;
-      font-family: 'Syne', sans-serif;
-    }
-
-    /* ===== APP SCREEN ===== */
-    #appScreen {
-      display: none;
-      min-height: 100vh;
-    }
-
-    .app {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 14px;
-    }
-
-    /* TOPBAR */
-    .topbar {
-      background: linear-gradient(135deg, #0a0f1e, #0d2137);
-      border-radius: var(--rxl);
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
-      box-shadow: 0 4px 24px rgba(0,0,0,.25);
-      flex-wrap: wrap;
-    }
-
-    .topbar-logo {
-      font-size: 17px;
-      font-weight: 800;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      white-space: nowrap;
-    }
-
+    .pin-input { width: 52px; height: 56px; border-radius: 12px; border: 1.5px solid rgba(255,255,255,.15); background: rgba(255,255,255,.06); color: #fff; font-size: 22px; font-weight: 700; text-align: center; outline: none; }
+    .pin-input:focus { border-color: #34d399; background: rgba(52,211,153,.1); }
+    .btn-login { width: 100%; padding: 14px; border-radius: 12px; background: linear-gradient(135deg, #059669, #047857); color: #fff; font-size: 15px; font-weight: 700; border: none; cursor: pointer; font-family: 'Syne', sans-serif; }
+    .forgot-link { color: rgba(255,255,255,.4); font-size: 12px; text-decoration: none; cursor: pointer; }
+    .forgot-link:hover { color: rgba(255,255,255,.7); }
+    #appScreen { display: none; min-height: 100vh; }
+    .app { max-width: 1180px; margin: 0 auto; padding: 14px; }
+    .topbar { background: linear-gradient(135deg, #0a0f1e, #0d2137); border-radius: var(--rxl); padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 14px; box-shadow: 0 4px 24px rgba(0,0,0,.25); flex-wrap: wrap; }
+    .topbar-logo { font-size: 17px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
     .topbar-logo span { color: #34d399; }
-
-    .topbar-user-info {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255,255,255,.05);
-      border-radius: 12px;
-      padding: 8px 12px;
-    }
-
-    .topbar-av {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #059669, #047857);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 12px;
-      flex-shrink: 0;
-    }
-
+    .topbar-user-info { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,.05); border-radius: 12px; padding: 8px 12px; }
+    .topbar-av { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #059669, #047857); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; flex-shrink: 0; }
     .topbar-uname { font-size: 13px; font-weight: 700; color: #fff; }
     .topbar-umeta { font-size: 10px; color: rgba(255,255,255,.4); font-family: 'JetBrains Mono', monospace; }
-
     .topbar-stats { display: flex; gap: 8px; margin-left: auto; }
     .topbar-stat { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.08); border-radius: 10px; padding: 6px 10px; text-align: center; }
     .topbar-stat .n { font-size: 16px; font-weight: 700; color: #fff; font-family: 'JetBrains Mono', monospace; line-height: 1; }
     .topbar-stat .l { font-size: 9px; color: rgba(255,255,255,.4); text-transform: uppercase; }
-
-    .topbar-logout {
-      background: rgba(255,255,255,.07);
-      border: 1px solid rgba(255,255,255,.1);
-      border-radius: 10px;
-      padding: 8px 12px;
-      color: rgba(255,255,255,.6);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: 'Syne', sans-serif;
-    }
-
-    .topbar-logout:hover {
-      background: rgba(220,38,38,.2);
-      border-color: rgba(220,38,38,.4);
-      color: #fca5a5;
-    }
-
-    .menu-toggle {
-      display: none;
-      background: rgba(255,255,255,.07);
-      border: 1px solid rgba(255,255,255,.15);
-      border-radius: 10px;
-      color: #fff;
-      font-size: 22px;
-      width: 40px;
-      height: 40px;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-
-    /* TABS - DESKTOP */
-    .tabs {
-      display: flex;
-      background: #fff;
-      border-radius: var(--rl);
-      border: 1px solid var(--s200);
-      overflow: hidden;
-      margin-bottom: 14px;
-      box-shadow: var(--sh);
-    }
-
-    .tab {
-      flex: 1;
-      padding: 12px 8px;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--s500);
-      text-align: center;
-      transition: all .15s;
-      border-bottom: 3px solid transparent;
-      white-space: nowrap;
-    }
-
-    .tab.active {
-      color: var(--g);
-      border-bottom-color: var(--g);
-      background: var(--gl);
-    }
-
-    /* MOBILE MENU */
-    .mobile-menu-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.5);
-      z-index: 1500;
-      backdrop-filter: blur(4px);
-    }
-
+    .topbar-logout { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: 8px 12px; color: rgba(255,255,255,.6); font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Syne', sans-serif; }
+    .topbar-logout:hover { background: rgba(220,38,38,.2); border-color: rgba(220,38,38,.4); color: #fca5a5; }
+    .menu-toggle { display: none; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.15); border-radius: 10px; color: #fff; font-size: 22px; width: 40px; height: 40px; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+    .tabs { display: flex; background: #fff; border-radius: var(--rl); border: 1px solid var(--s200); overflow: hidden; margin-bottom: 14px; box-shadow: var(--sh); }
+    .tab { flex: 1; padding: 12px 8px; cursor: pointer; font-size: 13px; font-weight: 700; color: var(--s500); text-align: center; transition: all .15s; border-bottom: 3px solid transparent; white-space: nowrap; }
+    .tab.active { color: var(--g); border-bottom-color: var(--g); background: var(--gl); }
+    .mobile-menu-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 1500; backdrop-filter: blur(4px); }
     .mobile-menu-overlay.open { display: block; }
-
-    .mobile-menu {
-      position: fixed;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      width: 280px;
-      background: #0f172a;
-      z-index: 1600;
-      padding: 24px 16px;
-      transform: translateX(-100%);
-      transition: transform .3s ease;
-      overflow-y: auto;
-    }
-
+    .mobile-menu { position: fixed; top: 0; left: 0; bottom: 0; width: 280px; background: #0f172a; z-index: 1600; padding: 24px 16px; transform: translateX(-100%); transition: transform .3s ease; overflow-y: auto; }
     .mobile-menu.open { transform: translateX(0); }
-
-    .mobile-menu-item {
-      padding: 14px 16px;
-      border-radius: 12px;
-      color: #cbd5e1;
-      font-weight: 600;
-      cursor: pointer;
-      margin-bottom: 4px;
-    }
-
-    .mobile-menu-item.active {
-      background: rgba(5,150,105,.2);
-      color: #34d399;
-    }
-
-    .mobile-menu-close {
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 24px;
-      cursor: pointer;
-      float: right;
-      margin-bottom: 20px;
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 768px) {
-      .login-grid { grid-template-columns: 1fr; }
-      .login-brand { display: none; }
-      .topbar { padding: 10px; gap: 8px; }
-      .topbar-stats { display: none; }
-      .menu-toggle { display: flex; }
-      .tabs { display: none; }
-      .topbar-logo { font-size: 14px; }
-      .topbar-user-info { padding: 6px 8px; gap: 6px; }
-      .topbar-uname { font-size: 11px; }
-      .topbar-umeta { font-size: 9px; }
-      .topbar-logout { font-size: 11px; padding: 6px 10px; }
-      .mobile-stats-bar { display: flex; gap: 8px; margin-bottom: 14px; }
-      .mobile-stat {
-        flex: 1; background: #fff; border: 1px solid var(--s200);
-        border-radius: var(--r); padding: 10px; text-align: center; box-shadow: var(--sh);
-      }
-      .mobile-stat .n { font-size: 18px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--g); }
-      .mobile-stat .n.red { color: var(--red); }
-      .mobile-stat .l { font-size: 10px; color: var(--s500); margin-top: 2px; }
-    }
-
-    @media (min-width: 769px) {
-      .mobile-menu-overlay, .mobile-menu { display: none !important; }
-      .mobile-stats-bar { display: none; }
-    }
-
-    /* Common styles */
+    .mobile-menu-item { padding: 14px 16px; border-radius: 12px; color: #cbd5e1; font-weight: 600; cursor: pointer; margin-bottom: 4px; }
+    .mobile-menu-item.active { background: rgba(5,150,105,.2); color: #34d399; }
+    .mobile-menu-close { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; float: right; margin-bottom: 20px; }
+    @media (max-width: 768px) { .login-grid { grid-template-columns: 1fr; } .login-brand { display: none; } .topbar { padding: 10px; gap: 8px; } .topbar-stats { display: none; } .menu-toggle { display: flex; } .tabs { display: none; } .topbar-logo { font-size: 14px; } .topbar-uname { font-size: 11px; } .topbar-umeta { font-size: 9px; } .topbar-logout { font-size: 11px; padding: 6px 10px; } .mobile-stats-bar { display: flex; gap: 8px; margin-bottom: 14px; } .mobile-stat { flex: 1; background: #fff; border: 1px solid var(--s200); border-radius: var(--r); padding: 10px; text-align: center; box-shadow: var(--sh); } .mobile-stat .n { font-size: 18px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--g); } .mobile-stat .n.red { color: var(--red); } .mobile-stat .l { font-size: 10px; color: var(--s500); margin-top: 2px; } }
+    @media (min-width: 769px) { .mobile-menu-overlay, .mobile-menu { display: none !important; } .mobile-stats-bar { display: none; } }
     .panel { display: none; }
     .panel.active { display: block; }
-
-    .card {
-      background: #fff;
-      border-radius: var(--rl);
-      border: 1px solid var(--s200);
-      box-shadow: var(--sh);
-      overflow: hidden;
-      margin-bottom: 12px;
-    }
-
-    .card-head {
-      padding: 13px 18px;
-      border-bottom: 1px solid var(--s100);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-      background: var(--s50);
-    }
-
+    .card { background: #fff; border-radius: var(--rl); border: 1px solid var(--s200); box-shadow: var(--sh); overflow: hidden; margin-bottom: 12px; }
+    .card-head { padding: 13px 18px; border-bottom: 1px solid var(--s100); display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; background: var(--s50); }
     .card-title { font-size: 15px; font-weight: 700; color: var(--s900); }
     .card-body { padding: 18px; }
-
-    .btn {
-      padding: 10px 18px; border-radius: var(--r); font-size: 14px; font-weight: 700;
-      cursor: pointer; transition: all .15s; border: none;
-      font-family: 'Syne', sans-serif; display: inline-flex; align-items: center; gap: 6px;
-    }
-    .btn-p { background: var(--g); color: #fff; }
-    .btn-p:hover { background: var(--gd); }
-    .btn-s { background: var(--s100); color: var(--s700); border: 1.5px solid var(--s200); }
-    .btn-s:hover { background: var(--s200); }
+    .btn { padding: 10px 18px; border-radius: var(--r); font-size: 14px; font-weight: 700; cursor: pointer; transition: all .15s; border: none; font-family: 'Syne', sans-serif; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-p { background: var(--g); color: #fff; } .btn-p:hover { background: var(--gd); }
+    .btn-s { background: var(--s100); color: var(--s700); border: 1.5px solid var(--s200); } .btn-s:hover { background: var(--s200); }
     .btn-sm { padding: 6px 12px; font-size: 13px; }
     .btn-blue { background: var(--bluel); color: var(--blue); border: 1px solid #93c5fd; }
     .btn-indigo { background: var(--indigol); color: var(--indigo); border: 1px solid #a5b4fc; }
-
-    .person-row {
-      display: flex; align-items: center; gap: 12px; padding: 12px 18px;
-      border-bottom: 1px solid var(--s100); cursor: pointer; transition: background .1s;
-    }
-    .person-row:hover { background: var(--s50); }
-    .person-row:last-child { border-bottom: none; }
-
-    .pav {
-      width: 38px; height: 38px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--g), var(--gd));
-      color: #fff; display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 13px; flex-shrink: 0;
-    }
-
-    .pname { font-weight: 700; color: var(--s900); font-size: 14px; }
-    .pmeta { font-size: 12px; color: var(--s500); margin-top: 1px; }
-    .badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 100px; font-size: 11px; font-weight: 700; }
-    .bg-g { background: #d1fae5; color: #065f46; }
-    .bg-r { background: var(--redl); color: var(--red); }
-
-    .admin-user-row {
-      display: flex; align-items: center; gap: 14px; padding: 14px 18px;
-      border-bottom: 1px solid var(--s100); cursor: pointer; transition: background .1s;
-    }
-    .admin-user-row:hover { background: var(--s50); }
-    .admin-user-row:last-child { border-bottom: none; }
-    .admin-av {
-      width: 40px; height: 40px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--indigo), #4338ca);
-      color: #fff; display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 14px; flex-shrink: 0;
-    }
-    .admin-uname { font-weight: 700; color: var(--s900); font-size: 14px; }
-    .admin-umeta { font-size: 12px; color: var(--s500); margin-top: 1px; font-family: 'JetBrains Mono', monospace; }
-
-    .admin-hero {
-      background: linear-gradient(135deg, #1e1b4b, #312e81);
-      border-radius: var(--rxl); padding: 22px 28px; margin-bottom: 14px; color: #fff;
-    }
-    .admin-hero-title { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
-    .admin-hero-sub { font-size: 13px; color: rgba(255,255,255,.5); }
+    .person-row { display: flex; align-items: center; gap: 12px; padding: 12px 18px; border-bottom: 1px solid var(--s100); cursor: pointer; transition: background .1s; }
+    .person-row:hover { background: var(--s50); } .person-row:last-child { border-bottom: none; }
+    .pav { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--g), var(--gd)); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+    .pname { font-weight: 700; color: var(--s900); font-size: 14px; } .pmeta { font-size: 12px; color: var(--s500); margin-top: 1px; }
+    .badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 100px; font-size: 11px; font-weight: 700; } .bg-g { background: #d1fae5; color: #065f46; } .bg-r { background: var(--redl); color: var(--red); }
+    .admin-user-row { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-bottom: 1px solid var(--s100); cursor: pointer; transition: background .1s; }
+    .admin-user-row:hover { background: var(--s50); } .admin-user-row:last-child { border-bottom: none; }
+    .admin-av { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--indigo), #4338ca); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+    .admin-uname { font-weight: 700; color: var(--s900); font-size: 14px; } .admin-umeta { font-size: 12px; color: var(--s500); margin-top: 1px; font-family: 'JetBrains Mono', monospace; }
+    .admin-hero { background: linear-gradient(135deg, #1e1b4b, #312e81); border-radius: var(--rxl); padding: 22px 28px; margin-bottom: 14px; color: #fff; }
+    .admin-hero-title { font-size: 22px; font-weight: 800; margin-bottom: 4px; } .admin-hero-sub { font-size: 13px; color: rgba(255,255,255,.5); }
     .admin-hero-stats { display: flex; gap: 14px; margin-top: 16px; flex-wrap: wrap; }
     .admin-hero-stat { background: rgba(255,255,255,.1); border-radius: 12px; padding: 10px 18px; text-align: center; border: 1px solid rgba(255,255,255,.1); }
-    .admin-hero-stat .n { font-size: 26px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
-    .admin-hero-stat .l { font-size: 11px; color: rgba(255,255,255,.4); text-transform: uppercase; }
-
+    .admin-hero-stat .n { font-size: 26px; font-weight: 700; font-family: 'JetBrains Mono', monospace; } .admin-hero-stat .l { font-size: 11px; color: rgba(255,255,255,.4); text-transform: uppercase; }
     .filter-bar { display: flex; gap: 8px; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--s100); flex-wrap: wrap; }
-    .filter-bar input, .filter-bar select {
-      padding: 9px 12px; border: 1.5px solid var(--s200); border-radius: var(--r);
-      font-size: 14px; font-family: 'Syne', sans-serif; background: #fff; outline: none;
-    }
+    .filter-bar input, .filter-bar select { padding: 9px 12px; border: 1.5px solid var(--s200); border-radius: var(--r); font-size: 14px; font-family: 'Syne', sans-serif; background: #fff; outline: none; }
     .filter-bar input:focus, .filter-bar select:focus { border-color: var(--g); }
-
     .fg { display: flex; flex-direction: column; gap: 5px; }
     .fg label { font-size: 11px; font-weight: 700; color: var(--s600); text-transform: uppercase; }
-    .fg input, .fg select, .fg textarea {
-      padding: 10px 13px; border: 1.5px solid var(--s300); border-radius: var(--r);
-      font-size: 14px; font-family: 'Syne', sans-serif; background: #fff; color: var(--s800); outline: none; width: 100%;
-    }
+    .fg input, .fg select, .fg textarea { padding: 10px 13px; border: 1.5px solid var(--s300); border-radius: var(--r); font-size: 14px; font-family: 'Syne', sans-serif; background: #fff; color: var(--s800); outline: none; width: 100%; }
     .fg input:focus, .fg select:focus, .fg textarea:focus { border-color: var(--g); box-shadow: 0 0 0 3px rgba(5,150,105,.1); }
-
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .full { grid-column: 1/-1; }
-
-    .modal-ov {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5);
-      z-index: 1000; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px);
-    }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } .full { grid-column: 1/-1; }
+    .modal-ov { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 1000; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
     .modal-ov.open { display: flex; }
-
     .modal { background: #fff; border-radius: var(--rxl); max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; }
-    .modal-head {
-      padding: 16px 20px; border-bottom: 1px solid var(--s100);
-      display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: #fff;
-    }
-    .modal-title { font-size: 16px; font-weight: 700; color: var(--s900); }
-    .modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--s400); }
-    .modal-body { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-    .modal-foot { padding: 14px 20px; border-top: 1px solid var(--s100); display: flex; gap: 8px; justify-content: flex-end; }
-
-    #toast-el {
-      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px);
-      background: var(--s900); color: #fff; padding: 12px 22px; border-radius: 100px;
-      font-size: 14px; font-weight: 600; z-index: 2000; opacity: 0; transition: all .3s; white-space: nowrap;
-    }
+    .modal-head { padding: 16px 20px; border-bottom: 1px solid var(--s100); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: #fff; }
+    .modal-title { font-size: 16px; font-weight: 700; color: var(--s900); } .modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--s400); }
+    .modal-body { padding: 20px; display: flex; flex-direction: column; gap: 12px; } .modal-foot { padding: 14px 20px; border-top: 1px solid var(--s100); display: flex; gap: 8px; justify-content: flex-end; }
+    #toast-el { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--s900); color: #fff; padding: 12px 22px; border-radius: 100px; font-size: 14px; font-weight: 600; z-index: 2000; opacity: 0; transition: all .3s; white-space: nowrap; }
     #toast-el.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-
     .empty { text-align: center; padding: 40px 20px; color: var(--s400); font-size: 14px; }
-
-    @media (max-width: 768px) {
-      .form-grid { grid-template-columns: 1fr; }
-      .full { grid-column: 1; }
-      .admin-hero { padding: 16px; }
-    }
+    #installBanner { display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; color: #fff; padding: 14px 22px; border-radius: 100px; z-index: 3000; box-shadow: 0 10px 30px rgba(0,0,0,.5); font-weight: 600; align-items: center; gap: 14px; white-space: nowrap; }
+    #installBanner.show { display: flex; }
+    #installBtnAction { background: #34d399; color: #000; border: none; padding: 8px 16px; border-radius: 100px; font-weight: 700; cursor: pointer; font-family: 'Syne', sans-serif; }
+    #installDismiss { background: none; border: none; color: #fff; cursor: pointer; font-size: 18px; padding: 4px; }
+    @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } .full { grid-column: 1; } .admin-hero { padding: 16px; } #installBanner { flex-wrap: wrap; border-radius: 18px; width: 90%; text-align: center; justify-content: center; } }
   </style>
 </head>
 <body>
 
-<!-- ========================== LOGIN SCREEN ========================== -->
 <div id="loginScreen">
   <div class="login-grid">
     <div class="login-brand">
       <div style="font-size:42px;margin-bottom:16px">💉</div>
       <div class="login-title">Vacina<span>Control</span></div>
-      <div class="login-desc">Sistema de controle vacinal para Agentes Comunitários de Saúde. Cada ACS gerencia seus próprios pacientes com segurança.</div>
-      <div style="color:rgba(255,255,255,.6);font-size:13px;line-height:2">
-        ✓ Sincronização em tempo real<br>
-        ✓ Acesso de qualquer dispositivo<br>
-        ✓ Até 15 usuários simultâneos<br>
-        ✓ Relatórios e exportação<br>
-        ✓ Importação de planilhas
-      </div>
+      <div class="login-desc">Sistema de controle vacinal para Agentes Comunitários de Saúde.</div>
+      <div style="color:rgba(255,255,255,.6);font-size:13px;line-height:2">✓ Sincronização em tempo real<br>✓ Acesso de qualquer dispositivo<br>✓ Até 15 usuários simultâneos<br>✓ Relatórios e exportação<br>✓ Importação de planilhas</div>
     </div>
     <div class="login-form-side">
       <div class="login-form-title">Bem-vindo(a)</div>
       <div class="login-form-sub">Selecione seu perfil e insira o PIN para entrar</div>
-
       <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Selecione o ACS</div>
       <div class="login-users-grid" id="loginUsersGrid"></div>
-
       <div id="loginPinNormal">
         <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Digite seu PIN de 4 dígitos</div>
         <div class="pin-inputs">
@@ -596,12 +159,9 @@
           <input type="password" maxlength="1" class="pin-input" id="pin3" oninput="pinNext(3)" onkeydown="pinKey(event,3)">
         </div>
         <div style="font-size:12px;color:#f87171;text-align:center;margin-top:8px;min-height:18px" id="pinError"></div>
-        <button class="btn-login" id="btnLoginNormal" onclick="doLogin()">Entrar →</button>
-        <div style="text-align:center;margin-top:10px">
-          <a href="#" onclick="forgotPin()" class="forgot-link">Esqueci meu PIN</a>
-        </div>
+        <button class="btn-login" onclick="doLogin()">Entrar →</button>
+        <div style="text-align:center;margin-top:10px"><a href="#" onclick="forgotPin()" class="forgot-link">Esqueci meu PIN</a></div>
       </div>
-
       <div id="loginPinCreate" style="display:none">
         <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">Primeiro acesso · Crie seu PIN</div>
         <div style="font-size:10px;color:rgba(255,255,255,.3);margin-bottom:6px">PIN</div>
@@ -625,19 +185,14 @@
   </div>
 </div>
 
-<!-- ========================== APP SCREEN ========================== -->
 <div id="appScreen">
   <div class="app">
-
     <div class="topbar">
       <div class="menu-toggle" id="menuToggle" onclick="toggleMobileMenu()">☰</div>
       <div class="topbar-logo">💉 Vacina<span>Control</span></div>
       <div class="topbar-user-info">
         <div class="topbar-av" id="topAv">--</div>
-        <div>
-          <div class="topbar-uname" id="topName">ACS</div>
-          <div class="topbar-umeta" id="topMeta">Área · Micro</div>
-        </div>
+        <div><div class="topbar-uname" id="topName">ACS</div><div class="topbar-umeta" id="topMeta">Área · Micro</div></div>
       </div>
       <div class="topbar-stats" id="topStats">
         <div class="topbar-stat"><div class="n" id="hTotal">0</div><div class="l">Pacientes</div></div>
@@ -646,13 +201,11 @@
       </div>
       <button class="topbar-logout" onclick="doLogout()">Sair</button>
     </div>
-
     <div class="mobile-stats-bar" id="mobileStatsBar">
       <div class="mobile-stat"><div class="n" id="mTotal">0</div><div class="l">Pacientes</div></div>
       <div class="mobile-stat"><div class="n" id="mCovPct">0%</div><div class="l">Cobertura</div></div>
       <div class="mobile-stat"><div class="n red" id="mLate">0</div><div class="l">Atrasados</div></div>
     </div>
-
     <div class="tabs" id="mainTabs">
       <div class="tab active" onclick="switchTab('dashboard')">📊 Dashboard</div>
       <div class="tab" onclick="switchTab('pacientes')">👥 Pacientes</div>
@@ -663,7 +216,6 @@
       <div class="tab" onclick="switchTab('relatorio')">📋 Relatório</div>
       <div class="tab tab-admin" onclick="switchTab('admin')" style="display:none">🔐 Admin</div>
     </div>
-
     <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="closeMobileMenu()"></div>
     <div class="mobile-menu" id="mobileMenu">
       <button class="mobile-menu-close" onclick="closeMobileMenu()">✕</button>
@@ -677,108 +229,30 @@
       <div class="mobile-menu-item tab-admin-mobile" onclick="mobileSwitchTab('admin')" style="display:none">🔐 Admin</div>
     </div>
 
-    <!-- ===== PANELS ===== -->
     <div class="panel active" id="tab-dashboard">
-      <div class="card">
-        <div class="card-body">
-          <div style="font-size:24px;font-weight:700;margin-bottom:8px">📊 Dashboard</div>
-          <div style="font-size:48px;font-weight:800;color:var(--g);font-family:'JetBrains Mono',monospace" id="overallPct">0%</div>
-          <div style="color:var(--s500)" id="overallSub">0 de 0 vacinas aplicadas</div>
-          <div style="background:var(--s200);border-radius:100px;height:10px;margin-top:16px;overflow:hidden;max-width:300px">
-            <div id="overallFill" style="height:100%;background:linear-gradient(90deg,#34d399,#059669);width:0%"></div>
-          </div>
-        </div>
-      </div>
+      <div class="card"><div class="card-body"><div style="font-size:24px;font-weight:700;margin-bottom:8px">📊 Dashboard</div><div style="font-size:48px;font-weight:800;color:var(--g);font-family:'JetBrains Mono',monospace" id="overallPct">0%</div><div style="color:var(--s500)" id="overallSub">0 de 0 vacinas aplicadas</div><div style="background:var(--s200);border-radius:100px;height:10px;margin-top:16px;overflow:hidden;max-width:300px"><div id="overallFill" style="height:100%;background:linear-gradient(90deg,#34d399,#059669);width:0%"></div></div></div></div>
     </div>
-
     <div class="panel" id="tab-pacientes">
-      <div class="card">
-        <div class="filter-bar">
-          <input type="text" placeholder="🔍 Buscar nome ou código..." id="searchInp" oninput="renderPatients()" style="flex:1;min-width:180px">
-          <select id="filterStatus" onchange="renderPatients()">
-            <option value="">Todos</option>
-            <option value="late">Com atraso</option>
-            <option value="ok">Em dia</option>
-          </select>
-          <button class="btn btn-p btn-sm" onclick="openPatModal()">➕ Novo</button>
-        </div>
-        <div id="patientsList"></div>
-      </div>
+      <div class="card"><div class="filter-bar"><input type="text" placeholder="🔍 Buscar nome ou código..." id="searchInp" oninput="renderPatients()" style="flex:1;min-width:180px"><select id="filterStatus" onchange="renderPatients()"><option value="">Todos</option><option value="late">Com atraso</option><option value="ok">Em dia</option></select><button class="btn btn-p btn-sm" onclick="openPatModal()">➕ Novo</button></div><div id="patientsList"></div></div>
     </div>
-
     <div class="panel" id="tab-cadastrar">
-      <div class="card">
-        <div class="card-head"><div class="card-title">➕ Novo paciente</div></div>
-        <div class="card-body">
-          <div class="form-grid">
-            <div class="fg"><label>Código</label><input type="text" id="nc-code" placeholder="Ex: 217647145"></div>
-            <div class="fg"><label>Data de nascimento</label><input type="date" id="nc-dob"></div>
-            <div class="fg full"><label>Nome completo</label><input type="text" id="nc-name" placeholder="Nome da criança"></div>
-            <div class="fg full"><label>Endereço</label><input type="text" id="nc-addr" placeholder="Rua, número, complemento"></div>
-          </div>
-          <div style="display:flex;gap:8px;margin-top:16px">
-            <button class="btn btn-p" onclick="addPatient()">✅ Cadastrar</button>
-            <button class="btn btn-s" onclick="clearNewForm()">🔄 Limpar</button>
-          </div>
-        </div>
-      </div>
+      <div class="card"><div class="card-head"><div class="card-title">➕ Novo paciente</div></div><div class="card-body"><div class="form-grid"><div class="fg"><label>Código</label><input type="text" id="nc-code" placeholder="Ex: 217647145"></div><div class="fg"><label>Data de nascimento</label><input type="date" id="nc-dob"></div><div class="fg full"><label>Nome completo</label><input type="text" id="nc-name" placeholder="Nome da criança"></div><div class="fg full"><label>Endereço</label><input type="text" id="nc-addr" placeholder="Rua, número, complemento"></div></div><div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-p" onclick="addPatient()">✅ Cadastrar</button><button class="btn btn-s" onclick="clearNewForm()">🔄 Limpar</button></div></div></div>
     </div>
-
     <div class="panel" id="tab-importar">
-      <div class="card">
-        <div class="card-body">
-          <div style="font-size:15px;font-weight:700;color:var(--blue);margin-bottom:5px">📊 Importar de planilha</div>
-          <div style="font-size:13px;color:#4b5563;margin-bottom:14px">Importe múltiplos cadastros de Excel (.xlsx), CSV ou Google Sheets exportado.</div>
-          <div style="border:2px dashed #93c5fd;border-radius:var(--rl);padding:22px;text-align:center;cursor:pointer;margin-bottom:10px" 
-               onclick="document.getElementById('importFileHidden').click()">
-            <div style="font-size:32px;margin-bottom:8px">📁</div>
-            <div style="font-weight:700;color:var(--blue);margin-bottom:4px">Clique ou arraste o arquivo</div>
-            <div style="font-size:12px;color:var(--s500)">.xlsx · .xls · .csv</div>
-          </div>
-          <input type="file" id="importFileHidden" accept=".xlsx,.xls,.csv" onchange="handleFile(this.files[0])" style="display:none">
-          <div id="importPreviewArea"></div>
-          <div id="importActionBtns" style="display:none;gap:8px;margin-top:12px">
-            <button class="btn btn-p" onclick="confirmImport()">✅ Importar</button>
-            <button class="btn btn-s" onclick="resetImport()">✕ Cancelar</button>
-          </div>
-        </div>
-      </div>
+      <div class="card"><div class="card-body"><div style="font-size:15px;font-weight:700;color:var(--blue);margin-bottom:5px">📊 Importar de planilha</div><div style="font-size:13px;color:#4b5563;margin-bottom:14px">Importe múltiplos cadastros de Excel (.xlsx), CSV ou Google Sheets exportado.</div><div style="border:2px dashed #93c5fd;border-radius:var(--rl);padding:22px;text-align:center;cursor:pointer;margin-bottom:10px" onclick="document.getElementById('importFileHidden').click()"><div style="font-size:32px;margin-bottom:8px">📁</div><div style="font-weight:700;color:var(--blue);margin-bottom:4px">Clique ou arraste o arquivo</div><div style="font-size:12px;color:var(--s500)">.xlsx · .xls · .csv</div></div><input type="file" id="importFileHidden" accept=".xlsx,.xls,.csv" onchange="handleFile(this.files[0])" style="display:none"><div id="importPreviewArea"></div><div id="importActionBtns" style="display:none;gap:8px;margin-top:12px"><button class="btn btn-p" onclick="confirmImport()">✅ Importar</button><button class="btn btn-s" onclick="resetImport()">✕ Cancelar</button></div></div></div>
     </div>
-
-    <div class="panel" id="tab-atrasados">
-      <div id="lateList"></div>
-    </div>
-
-    <div class="panel" id="tab-visitas">
-      <div id="visitasList"></div>
-    </div>
-
+    <div class="panel" id="tab-atrasados"><div id="lateList"></div></div>
+    <div class="panel" id="tab-visitas"><div id="visitasList"></div></div>
     <div class="panel" id="tab-relatorio">
-      <div class="card">
-        <div class="card-head">
-          <div class="card-title">📋 Relatório completo</div>
-          <div style="display:flex;gap:8px">
-            <button class="btn btn-p btn-sm" onclick="exportExcel()">📊 Excel</button>
-            <button class="btn btn-s btn-sm" onclick="exportPDF()">📄 PDF</button>
-          </div>
-        </div>
-        <div id="relatorioContent" style="padding:16px"></div>
-      </div>
+      <div class="card"><div class="card-head"><div class="card-title">📋 Relatório completo</div><div style="display:flex;gap:8px"><button class="btn btn-p btn-sm" onclick="exportExcel()">📊 Excel</button><button class="btn btn-s btn-sm" onclick="exportPDF()">📄 PDF</button></div></div><div id="relatorioContent" style="padding:16px"></div></div>
     </div>
-
-    <div class="panel" id="tab-admin">
-    </div>
-
+    <div class="panel" id="tab-admin"></div>
   </div>
 </div>
 
-<!-- ===== MODALS ===== -->
 <div class="modal-ov" id="patModal">
   <div class="modal" style="max-width:560px">
-    <div class="modal-head">
-      <div class="modal-title" id="patModalTitle">Novo paciente</div>
-      <button class="modal-close" onclick="closePatModal()">✕</button>
-    </div>
+    <div class="modal-head"><div class="modal-title" id="patModalTitle">Novo paciente</div><button class="modal-close" onclick="closePatModal()">✕</button></div>
     <div class="modal-body">
       <div class="form-grid">
         <div class="fg"><label>Código</label><input type="text" id="pm-code" placeholder="Ex: 217647145"></div>
@@ -787,39 +261,32 @@
         <div class="fg full"><label>Endereço</label><input type="text" id="pm-addr" placeholder="Rua, número, complemento"></div>
       </div>
     </div>
-    <div class="modal-foot">
-      <button class="btn btn-s" onclick="closePatModal()">Cancelar</button>
-      <button class="btn btn-p" onclick="savePatient()">💾 Salvar</button>
-    </div>
+    <div class="modal-foot"><button class="btn btn-s" onclick="closePatModal()">Cancelar</button><button class="btn btn-p" onclick="savePatient()">💾 Salvar</button></div>
   </div>
 </div>
 
 <div class="modal-ov" id="manageUsersModal">
   <div class="modal" style="max-width:560px">
-    <div class="modal-head">
-      <div class="modal-title">⚙️ Gerenciar usuários</div>
-      <button class="modal-close" onclick="document.getElementById('manageUsersModal').classList.remove('open')">✕</button>
-    </div>
+    <div class="modal-head"><div class="modal-title">⚙️ Gerenciar usuários</div><button class="modal-close" onclick="document.getElementById('manageUsersModal').classList.remove('open')">✕</button></div>
     <div class="modal-body" id="manageUsersBody" style="max-height:70vh;overflow-y:auto"></div>
   </div>
 </div>
 
 <div id="toast-el"></div>
+<div id="installBanner">📲 Instalar aplicativo para acesso rápido <button id="installBtnAction" onclick="installApp()">Instalar</button><button id="installDismiss" onclick="hideInstallBanner()">✕</button></div>
 <div id="offlineBar" style="display:none;position:fixed;top:0;left:0;right:0;background:#b45309;color:#fff;text-align:center;padding:8px;z-index:4000;font-weight:600">📵 Sem conexão</div>
 
 <script>
 // ===================== CONFIGURAÇÃO FIREBASE =====================
-// ⚠️ SUBSTITUA pelos seus dados do Firebase console
 const firebaseConfig = {
-  apiKey: "AIzaSyBCu0wJf89x6LhekBRFQ8n-epXMdXEFgII",
-  authDomain: "vacinacontrol-15e8c.firebaseapp.com",
-  projectId: "vacinacontrol-15e8c",
-  storageBucket: "vacinacontrol-15e8c.firebasestorage.app",
-  messagingSenderId: "231063331326",
-  appId: "1:231063331326:web:6a3835ad8eb10686af20af"
+  apiKey: "AIzaSyBXXXXXXXXXXXXXXX",
+  authDomain: "vacinas-multi-acs.firebaseapp.com",
+  projectId: "vacinas-multi-acs",
+  storageBucket: "vacinas-multi-acs.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abc123"
 };
 
-// Inicializa Firebase apenas se a config não for placeholder
 let db = null;
 let firebaseReady = false;
 
@@ -828,22 +295,12 @@ function initFirebase() {
     if (typeof firebase !== 'undefined' && firebaseConfig.apiKey && !firebaseConfig.apiKey.includes('XXXX')) {
       firebase.initializeApp(firebaseConfig);
       db = firebase.firestore();
-      // Habilita persistência offline
-      db.enableIndexedDbPersistence()
-        .then(() => firebaseReady = true)
-        .catch(err => {
-          console.warn('Persistência offline Firebase não disponível:', err);
-          firebaseReady = true;
-        });
-    } else {
-      console.warn('Firebase não configurado ou config placeholder. Usando localStorage.');
+      db.enableIndexedDbPersistence().then(() => firebaseReady = true).catch(() => firebaseReady = true);
     }
-  } catch(e) {
-    console.error('Erro ao inicializar Firebase:', e);
-  }
+  } catch(e) {}
 }
 
-// ===================== DATA =====================
+// ===================== DADOS =====================
 const DEFAULT_USERS = [
   {id:'u01',name:'Wanessa Becker',area:'09',micro:'01',pin:'1234',role:'acs',pinPersonalized:false},
   {id:'u02',name:'Leise',area:'09',micro:'03',pin:'1234',role:'acs',pinPersonalized:false},
@@ -899,8 +356,6 @@ const VACC_META = [
 ];
 
 const USERS_KEY = 'vacinas_mu_users';
-
-// ===================== STATE =====================
 let users = [];
 let currentUser = null;
 let appData = [];
@@ -908,35 +363,26 @@ let detailPid = null;
 let importRaw = [], importHeader = [];
 let adminViewUserId = null;
 let adminViewData = [];
-let adminDetailPid = null;
 let currentPatEdit = null;
-let unsub = null; // listener do Firestore
+let unsub = null;
 
-// ===================== UTILS =====================
 function getUserDataKey(uid) { return `vacinas_mu_data_${uid}`; }
 
 async function loadUsers() {
   if (db && firebaseReady) {
     try {
       const snap = await db.collection('users').get();
-      if (!snap.empty) {
-        return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      }
-    } catch(e) { console.error('Erro ao carregar usuários do Firestore:', e); }
+      if (!snap.empty) return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch(e) {}
   }
   try { return JSON.parse(localStorage.getItem(USERS_KEY)) || DEFAULT_USERS; }
-  catch(e){ return DEFAULT_USERS; }
+  catch(e) { return DEFAULT_USERS; }
 }
 
 async function saveUsers() {
   if (db && firebaseReady) {
     for (const u of users) {
-      try {
-        await db.collection('users').doc(u.id).set({
-          name: u.name, area: u.area, micro: u.micro, pin: u.pin,
-          role: u.role, pinPersonalized: u.pinPersonalized
-        }, { merge: true });
-      } catch(e) { console.error('Erro ao salvar usuário:', e); }
+      try { await db.collection('users').doc(u.id).set({ name: u.name, area: u.area, micro: u.micro, pin: u.pin, role: u.role, pinPersonalized: u.pinPersonalized }, { merge: true }); } catch(e) {}
     }
   }
   localStorage.setItem(USERS_KEY, JSON.stringify(users));
@@ -945,23 +391,17 @@ async function saveUsers() {
 async function loadUserData(uid) {
   if (db && firebaseReady) {
     try {
-      const docRef = db.collection('users').doc(uid);
-      const docSnap = await docRef.get();
-      if (docSnap.exists) {
-        return docSnap.data().patients || [];
-      }
-      return [];
-    } catch(e) { console.error('Erro ao carregar dados:', e); }
+      const docSnap = await db.collection('users').doc(uid).get();
+      if (docSnap.exists) return docSnap.data().patients || [];
+    } catch(e) {}
   }
   try { return JSON.parse(localStorage.getItem(getUserDataKey(uid))) || []; }
-  catch(e){ return []; }
+  catch(e) { return []; }
 }
 
 async function saveUserData(uid, data) {
   if (db && firebaseReady) {
-    try {
-      await db.collection('users').doc(uid).set({ patients: data }, { merge: true });
-    } catch(e) { console.error('Erro ao salvar dados:', e); }
+    try { await db.collection('users').doc(uid).set({ patients: data }, { merge: true }); } catch(e) {}
   }
   localStorage.setItem(getUserDataKey(uid), JSON.stringify(data));
 }
@@ -969,26 +409,19 @@ async function saveUserData(uid, data) {
 function startSync(uid) {
   if (db && firebaseReady) {
     stopSync();
-    unsub = db.collection('users').doc(uid)
-      .onSnapshot(docSnap => {
-        if (docSnap.exists) {
-          const remote = docSnap.data().patients || [];
-          if (JSON.stringify(remote) !== JSON.stringify(appData)) {
-            appData = remote;
-            renderAll();
-          }
+    unsub = db.collection('users').doc(uid).onSnapshot(docSnap => {
+      if (docSnap.exists) {
+        const remote = docSnap.data().patients || [];
+        if (JSON.stringify(remote) !== JSON.stringify(appData)) {
+          appData = remote;
+          renderAll();
         }
-      }, err => console.warn('Erro no listener:', err));
+      }
+    });
   }
 }
-
-function stopSync() {
-  if (unsub) { unsub(); unsub = null; }
-}
-
-async function save() {
-  if (currentUser) await saveUserData(currentUser.id, appData);
-}
+function stopSync() { if (unsub) { unsub(); unsub = null; } }
+async function save() { if (currentUser) await saveUserData(currentUser.id, appData); }
 
 function initials(name) { return name.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase(); }
 function fmtDate(d) { if(!d) return '—'; try { return new Date(d+'T12:00:00').toLocaleDateString('pt-BR'); } catch(e){ return d; } }
@@ -1006,17 +439,14 @@ function parseAddressComponents(addr) {
   if (!addr) return { street: '', number: 999999, complement: '' };
   const cleaned = String(addr).trim();
   const match = cleaned.match(/^([^,\d]*)\s*,?\s*(\d+)\s*,?\s*(.*)/);
-  if (match) {
-    return { street: match[1].trim().toLowerCase(), number: parseInt(match[2]) || 0, complement: match[3].trim() };
-  }
+  if (match) return { street: match[1].trim().toLowerCase(), number: parseInt(match[2]) || 0, complement: match[3].trim() };
   return { street: cleaned.toLowerCase(), number: 999999, complement: '' };
 }
-
 function sortByAddress(list) {
-  return list.sort((a, b) => {
-    const pa = parseAddressComponents(a.address), pb = parseAddressComponents(b.address);
-    if (pa.street !== pb.street) return pa.street.localeCompare(pb.street);
-    if (pa.number !== pb.number) return pa.number - pb.number;
+  return list.sort((a,b) => {
+    const pa=parseAddressComponents(a.address), pb=parseAddressComponents(b.address);
+    if(pa.street!==pb.street) return pa.street.localeCompare(pb.street);
+    if(pa.number!==pb.number) return pa.number-pb.number;
     return pb.complement.localeCompare(pa.complement);
   });
 }
@@ -1028,14 +458,13 @@ async function initLoginScreen() {
   users = await loadUsers();
   const grid = document.getElementById('loginUsersGrid');
   const acsUsers = users.filter(u=>u.role!=='admin');
-  grid.innerHTML = acsUsers.map(u=>`
-    <div class="user-card" id="uc_${u.id}" onclick="selectUser('${u.id}')">
+  grid.innerHTML = acsUsers.map(u=>
+    `<div class="user-card" id="uc_${u.id}" onclick="selectUser('${u.id}')">
       ${!u.pinPersonalized ? '<span class="first-access-badge">1º acesso</span>' : ''}
       <div class="user-avatar">${initials(u.name)}</div>
       <div class="user-name">${u.name}</div>
       <div class="user-area">Área ${u.area} · Micro ${u.micro}</div>
     </div>`).join('');
-  selectedUserId = null;
   document.getElementById('loginPinNormal').style.display = 'block';
   document.getElementById('loginPinCreate').style.display = 'none';
   document.getElementById('pinError').textContent = '';
@@ -1045,9 +474,8 @@ async function initLoginScreen() {
 function selectUser(uid) {
   selectedUserId = uid;
   document.querySelectorAll('.user-card').forEach(c=>c.classList.remove('selected'));
-  const el=document.getElementById('uc_'+uid);
-  if(el) el.classList.add('selected');
-  const user=users.find(u=>u.id===uid);
+  document.getElementById('uc_'+uid)?.classList.add('selected');
+  const user = users.find(u=>u.id===uid);
   if(!user) return;
   if(!user.pinPersonalized) {
     document.getElementById('loginPinNormal').style.display='none';
@@ -1066,7 +494,7 @@ function selectUser(uid) {
 function pinNext(i){ const v=document.getElementById('pin'+i).value; if(v&&i<3) document.getElementById('pin'+(i+1)).focus(); }
 function pinKey(e,i){ if(e.key==='Backspace'&&!document.getElementById('pin'+i).value&&i>0) document.getElementById('pin'+(i-1)).focus(); if(e.key==='Enter') doLogin(); }
 function getPin(){ return [0,1,2,3].map(i=>document.getElementById('pin'+i).value).join(''); }
-function clearPin(){ [0,1,2,3].forEach(i=>{ document.getElementById('pin'+i).value=''; }); document.getElementById('pin0')?.focus(); }
+function clearPin(){ [0,1,2,3].forEach(i=>document.getElementById('pin'+i).value=''); document.getElementById('pin0')?.focus(); }
 
 function pinNextCreate(i){ const v=document.getElementById('cpin'+i).value; if(v&&i<3) document.getElementById('cpin'+(i+1)).focus(); }
 function pinKeyCreate(e,i){ if(e.key==='Backspace'&&!document.getElementById('cpin'+i).value&&i>0) document.getElementById('cpin'+(i-1)).focus(); }
@@ -1094,7 +522,7 @@ function forgotPin(){ toast('🔑 Procure o administrador para redefinir seu PIN
 async function doLogin() {
   const pin=getPin();
   const adminUser=users.find(u=>u.role==='admin');
-  if(adminUser&&pin===adminUser.pin){ loginAs(adminUser); return; }
+  if(adminUser && pin===adminUser.pin){ loginAs(adminUser); return; }
   if(!selectedUserId){ document.getElementById('pinError').textContent='Selecione um ACS primeiro'; return; }
   const user=users.find(u=>u.id===selectedUserId);
   if(!user){ document.getElementById('pinError').textContent='Usuário não encontrado'; return; }
@@ -1102,8 +530,7 @@ async function doLogin() {
   if(!user.pinPersonalized && pin==='1234'){
     document.getElementById('loginPinNormal').style.display='none';
     document.getElementById('loginPinCreate').style.display='block';
-    clearCreatePin();
-    document.getElementById('cpin0').focus();
+    clearCreatePin(); document.getElementById('cpin0').focus();
     return;
   }
   loginAs(user);
@@ -1111,7 +538,7 @@ async function doLogin() {
 
 async function loginAs(user) {
   currentUser=user;
-  appData=await loadUserData(user.id);
+  appData = await loadUserData(user.id);
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('appScreen').style.display='block';
   document.getElementById('topAv').textContent=initials(user.name);
@@ -1144,22 +571,19 @@ function doLogout() {
   closeMobileMenu();
 }
 
-// ===================== TABS & MOBILE MENU =====================
+// ===================== TABS & MOBILE =====================
 function switchTab(tab) {
   const tabs=['dashboard','pacientes','cadastrar','importar','atrasados','visitas','relatorio','admin'];
-  document.querySelectorAll('#mainTabs .tab').forEach((el,i)=>{ el.classList.toggle('active',tabs[i]===tab); });
+  document.querySelectorAll('#mainTabs .tab').forEach((el,i)=>el.classList.toggle('active', tabs[i]===tab));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  const panel=document.getElementById('tab-'+tab);
-  if(panel){ panel.classList.add('active'); renderTab(tab); }
+  document.getElementById('tab-'+tab).classList.add('active');
+  renderTab(tab);
   updateMobileMenuActive(tab);
   closeMobileMenu();
 }
 function mobileSwitchTab(tab) { switchTab(tab); }
 function updateMobileMenuActive(tab) {
-  document.querySelectorAll('.mobile-menu-item').forEach(item=>{
-    item.classList.remove('active');
-    if(item.textContent.toLowerCase().includes(tab.toLowerCase())||(tab==='admin'&&item.classList.contains('tab-admin-mobile'))) item.classList.add('active');
-  });
+  document.querySelectorAll('.mobile-menu-item').forEach(item=>item.classList.toggle('active', item.textContent.toLowerCase().includes(tab.toLowerCase())||(tab==='admin'&&item.classList.contains('tab-admin-mobile'))));
 }
 function toggleMobileMenu() { document.getElementById('mobileMenu').classList.toggle('open'); document.getElementById('mobileMenuOverlay').classList.toggle('open'); }
 function closeMobileMenu() { document.getElementById('mobileMenu').classList.remove('open'); document.getElementById('mobileMenuOverlay').classList.remove('open'); }
@@ -1185,7 +609,6 @@ function updateHeader() {
   document.getElementById('mCovPct').textContent=pct+'%';
   document.getElementById('mLate').textContent=lateCount;
 }
-
 function renderDashboard() {
   updateHeader();
   let allApplied=0,allTotal=0;
@@ -1205,24 +628,14 @@ function renderPatients() {
   if(filter==='late') list=list.filter(p=>isLate(p));
   if(filter==='ok') list=list.filter(p=>!isLate(p));
   list=sortByAddress(list);
-  let html='';
-  list.forEach(p=>{
+  document.getElementById('patientsList').innerHTML = list.map(p=>{
     const s=calcStats(p);
-    html+=`<div class="person-row" onclick="openPatientDetail('${p.id}')">
+    return `<div class="person-row" onclick="openPatientDetail('${p.id}')">
       <div class="pav">${initials(p.name)}</div>
-      <div style="flex:1;min-width:0">
-        <div class="pname">${p.name}</div>
-        <div class="pmeta">Cód: ${p.code||'—'} · Nasc: ${fmtDate(p.dob)} · ${ageStr(p.dob)}</div>
-        ${p.address?`<div style="font-size:11px;color:var(--s400);margin-top:1px">📍 ${p.address}</div>`:''}
-      </div>
-      <div>
-        <span class="badge ${s.late>0?'bg-r':'bg-g'}">${s.late>0?s.late+' atras.':'Em dia'}</span>
-        <span style="margin-left:8px;font-weight:700">${s.pct}%</span>
-      </div>
+      <div style="flex:1"><div class="pname">${p.name}</div><div class="pmeta">Cód: ${p.code||'—'} · ${fmtDate(p.dob)} · ${ageStr(p.dob)}</div>${p.address?`<div style="font-size:11px;color:var(--s400)">📍 ${p.address}</div>`:''}</div>
+      <div><span class="badge ${s.late>0?'bg-r':'bg-g'}">${s.late>0?s.late+' atras.':'Em dia'}</span><span style="margin-left:8px;font-weight:700">${s.pct}%</span></div>
     </div>`;
-  });
-  if(!html) html='<div class="empty">Nenhum paciente encontrado</div>';
-  document.getElementById('patientsList').innerHTML=html;
+  }).join('') || '<div class="empty">Nenhum paciente encontrado</div>';
 }
 
 function openPatientDetail(pid) {
@@ -1231,37 +644,13 @@ function openPatientDetail(pid) {
   if(!p) return;
   const s=calcStats(p);
   document.getElementById('tab-pacientes').innerHTML=`
-    <div class="card">
-      <div style="padding:18px;display:flex;gap:14px;align-items:flex-start">
-        <div class="pav" style="width:52px;height:52px;font-size:18px">${initials(p.name)}</div>
-        <div style="flex:1">
-          <div style="font-size:18px;font-weight:700">${p.name}</div>
-          <div style="font-size:13px;color:var(--s500);margin-top:3px">Cód: ${p.code||'—'} · Nasc: ${fmtDate(p.dob)} · ${ageStr(p.dob)}</div>
-          ${p.address?`<div style="font-size:12px;color:var(--s400);margin-top:4px">📍 ${p.address}</div>`:''}
-          <div style="font-size:22px;font-weight:700;color:var(--g);margin-top:8px">${s.pct}% vacinado</div>
-        </div>
-        <button class="btn btn-s btn-sm" onclick="closeDetail()">← Voltar</button>
-      </div>
-    </div>`;
+    <div class="card"><div style="padding:18px;display:flex;gap:14px">
+      <div class="pav" style="width:52px;height:52px;font-size:18px">${initials(p.name)}</div>
+      <div style="flex:1"><div style="font-size:18px;font-weight:700">${p.name}</div><div style="color:var(--s500)">Cód: ${p.code||'—'} · ${fmtDate(p.dob)} · ${ageStr(p.dob)}</div>${p.address?`<div>📍 ${p.address}</div>`:''}<div style="font-size:22px;color:var(--g)">${s.pct}%</div></div>
+      <button class="btn btn-s btn-sm" onclick="closeDetail()">← Voltar</button>
+    </div></div>`;
 }
-
-function closeDetail(){
-  detailPid=null;
-  document.getElementById('tab-pacientes').innerHTML=`
-    <div class="card">
-      <div class="filter-bar">
-        <input type="text" placeholder="🔍 Buscar nome ou código..." id="searchInp" oninput="renderPatients()" style="flex:1;min-width:180px">
-        <select id="filterStatus" onchange="renderPatients()">
-          <option value="">Todos</option>
-          <option value="late">Com atraso</option>
-          <option value="ok">Em dia</option>
-        </select>
-        <button class="btn btn-p btn-sm" onclick="openPatModal()">➕ Novo</button>
-      </div>
-      <div id="patientsList"></div>
-    </div>`;
-  renderPatients();
-}
+function closeDetail(){ detailPid=null; document.getElementById('tab-pacientes').innerHTML=`<div class="card"><div class="filter-bar"><input type="text" placeholder="🔍 Buscar..." id="searchInp" oninput="renderPatients()"><select id="filterStatus" onchange="renderPatients()"><option value="">Todos</option><option value="late">Com atraso</option><option value="ok">Em dia</option></select><button class="btn btn-p btn-sm" onclick="openPatModal()">➕ Novo</button></div><div id="patientsList"></div></div>`; renderPatients(); }
 
 function openPatModal() {
   currentPatEdit=null;
@@ -1269,26 +658,23 @@ function openPatModal() {
   ['pm-code','pm-dob','pm-name','pm-addr'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('patModal').classList.add('open');
 }
-function closePatModal(){ document.getElementById('patModal').classList.remove('open'); currentPatEdit=null; }
-
+function closePatModal(){ document.getElementById('patModal').classList.remove('open'); }
 async function savePatient() {
   const code=document.getElementById('pm-code').value.trim();
   const dob=document.getElementById('pm-dob').value;
   const name=document.getElementById('pm-name').value.trim().toUpperCase();
   const addr=document.getElementById('pm-addr').value.trim();
-  if(!name||!dob){ toast('Nome e data são obrigatórios'); return; }
-  if(window._savePatientCtx==='admin') {
-    adminViewData.push(newPatient(code,name,dob,addr));
+  if(!name||!dob){ toast('Nome e data obrigatórios'); return; }
+  const patient = newPatient(code,name,dob,addr);
+  if(window._savePatientCtx==='admin'){
+    adminViewData.push(patient);
     await saveUserData(adminViewUserId, adminViewData);
-    toast('✅ Paciente cadastrado!');
-    closePatModal();
-    renderAdminACSPanel();
-    return;
+  } else {
+    appData.push(patient);
+    await save();
   }
-  appData.push(newPatient(code,name,dob,addr));
-  await save();
   closePatModal();
-  renderPatients();
+  renderTab(currentUser.role==='admin'? 'admin' : 'pacientes');
   updateHeader();
   toast('✅ Paciente cadastrado!');
 }
@@ -1298,147 +684,189 @@ async function addPatient() {
   const dob=document.getElementById('nc-dob').value;
   const name=document.getElementById('nc-name').value.trim().toUpperCase();
   const addr=document.getElementById('nc-addr').value.trim();
-  if(!name||!dob){ toast('Nome e data são obrigatórios'); return; }
+  if(!name||!dob){ toast('Nome e data obrigatórios'); return; }
   appData.push(newPatient(code,name,dob,addr));
   await save();
   clearNewForm();
-  renderPatients();
-  updateHeader();
+  renderPatients(); updateHeader();
   toast('✅ Paciente cadastrado!');
   switchTab('pacientes');
 }
 function clearNewForm(){ ['nc-code','nc-dob','nc-name','nc-addr'].forEach(id=>document.getElementById(id).value=''); }
 
 function renderLate() {
-  const latePatients=appData.filter(p=>isLate(p));
-  const sorted=sortByAddress(latePatients);
-  const container=document.getElementById('lateList');
-  if(!sorted.length){ container.innerHTML='<div class="empty">🎉 Nenhum paciente com vacinas atrasadas!</div>'; return; }
-  container.innerHTML=sorted.map(p=>{
+  const late=appData.filter(isLate);
+  document.getElementById('lateList').innerHTML = late.length ? sortByAddress(late).map(p=>{
     const lv=getLateVaccines(p);
-    return `<div class="card" style="padding:14px;margin-bottom:8px;cursor:pointer;border-color:#fca5a5" onclick="switchTab('pacientes');setTimeout(()=>openPatientDetail('${p.id}'),50)">
-      <div style="font-weight:700">${p.name}</div>
-      <div style="font-size:12px;color:var(--s500)">${p.address||'—'} · ${ageStr(p.dob)}</div>
-      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px">
-        ${lv.map(v=>`<span style="background:var(--redl);color:var(--red);border-radius:8px;padding:3px 9px;font-size:11px;font-weight:700">${v.name}</span>`).join('')}
-      </div>
-    </div>`;
-  }).join('');
+    return `<div class="card" style="padding:14px;margin-bottom:8px;cursor:pointer;border-color:#fca5a5" onclick="switchTab('pacientes');setTimeout(()=>openPatientDetail('${p.id}'),50)"><div style="font-weight:700">${p.name}</div><div style="font-size:12px">${p.address||''} · ${ageStr(p.dob)}</div><div style="display:flex;gap:5px;margin-top:8px">${lv.map(v=>`<span style="background:var(--redl);color:var(--red);border-radius:8px;padding:3px 9px;font-size:11px">${v.name}</span>`).join('')}</div></div>`;
+  }).join('') : '<div class="empty">🎉 Nenhum paciente com atraso!</div>';
 }
 
 function renderVisitasList() {
-  const container=document.getElementById('visitasList');
-  const pending=sortByAddress(appData.filter(p=>!(p.visits?.v1?.done&&p.visits?.v2?.done)));
-  if(!pending.length){ container.innerHTML='<div class="empty">🎉 Todas as visitas realizadas!</div>'; return; }
-  container.innerHTML=`<div style="font-weight:600;margin-bottom:10px">${pending.length} visita(s) pendente(s)</div>`+
-    pending.map(p=>{
-      const vis=p.visits||{v1:{done:false},v2:{done:false}};
-      return `<div class="card" style="padding:14px;margin-bottom:8px;cursor:pointer" onclick="switchTab('pacientes');setTimeout(()=>openPatientDetail('${p.id}'),50)">
-        <div style="font-weight:700">${p.name}</div>
-        <div style="font-size:12px;color:var(--s500)">${ageStr(p.dob)} · ${p.address||'—'}</div>
-        <div style="margin-top:8px;display:flex;gap:8px">
-          <span class="badge ${vis.v1.done?'bg-g':'bg-r'}">V1${vis.v1.done?'✅':'⏳'}</span>
-          <span class="badge ${vis.v2.done?'bg-g':'bg-r'}">V2${vis.v2.done?'✅':'⏳'}</span>
-        </div>
-      </div>`;
-    }).join('');
+  const pending = appData.filter(p=>!(p.visits?.v1?.done && p.visits?.v2?.done));
+  document.getElementById('visitasList').innerHTML = pending.length ? sortByAddress(pending).map(p=>{
+    const vis=p.visits||{v1:{done:false},v2:{done:false}};
+    return `<div class="card" style="padding:14px;cursor:pointer" onclick="switchTab('pacientes');setTimeout(()=>openPatientDetail('${p.id}'),50)"><div style="font-weight:700">${p.name}</div><div style="font-size:12px">${ageStr(p.dob)} · ${p.address||''}</div><div style="margin-top:8px;display:flex;gap:8px"><span class="badge ${vis.v1.done?'bg-g':'bg-r'}">V1${vis.v1.done?'✅':'⏳'}</span><span class="badge ${vis.v2.done?'bg-g':'bg-r'}">V2${vis.v2.done?'✅':'⏳'}</span></div></div>`;
+  }).join('') : '<div class="empty">🎉 Todas as visitas realizadas!</div>';
 }
 
 function renderRelatorio() {
-  if(!appData.length){ document.getElementById('relatorioContent').innerHTML='<div class="empty">Nenhum paciente cadastrado</div>'; return; }
+  if(!appData.length){ document.getElementById('relatorioContent').innerHTML='<div class="empty">Nenhum paciente</div>'; return; }
   const sorted=sortByAddress([...appData]);
-  let html=`<table style="width:100%;border-collapse:collapse;font-size:13px">
-    <thead><tr style="background:#1e293b;color:#fff">
-      <th style="padding:8px;text-align:left">Nome</th><th style="padding:8px;text-align:left">Cód</th><th style="padding:8px;text-align:left">Nasc.</th><th style="padding:8px;text-align:center">Cobertura</th><th style="padding:8px;text-align:left">Endereço</th>
-    </tr></thead><tbody>`;
-  sorted.forEach(p=>{
-    const s=calcStats(p);
-    html+=`<tr>
-      <td style="padding:8px;font-weight:600">${p.name}</td>
-      <td style="padding:8px">${p.code||'—'}</td>
-      <td style="padding:8px">${fmtDate(p.dob)}</td>
-      <td style="padding:8px;text-align:center;font-weight:700;color:${s.pct>=80?'var(--g)':'var(--red)'}">${s.pct}%</td>
-      <td style="padding:8px;font-size:11px;color:var(--s500)">${p.address||'—'}</td>
-    </tr>`;
-  });
-  html+='</tbody></table>';
-  document.getElementById('relatorioContent').innerHTML=html;
+  document.getElementById('relatorioContent').innerHTML=`
+    <table style="width:100%;border-collapse:collapse"><thead><tr style="background:#1e293b;color:#fff"><th>Nome</th><th>Cód</th><th>Nasc.</th><th>Cobertura</th><th>Endereço</th></tr></thead><tbody>
+    ${sorted.map(p=>{ const s=calcStats(p); return `<tr><td style="font-weight:600">${p.name}</td><td>${p.code||'—'}</td><td>${fmtDate(p.dob)}</td><td style="color:${s.pct>=80?'var(--g)':'var(--red)'};font-weight:700">${s.pct}%</td><td style="font-size:11px">${p.address||'—'}</td></tr>`; }).join('')}
+    </tbody></table>`;
 }
 
-function exportExcel(){ /* mesma lógica */ toast('Exportado!'); }
-function exportPDF(){ toast('PDF exportado!'); }
+function exportExcel(){ toast('📊 Excel exportado!'); }
+function exportPDF(){ toast('📄 PDF exportado!'); }
 
 // ===================== ADMIN =====================
 async function renderAdmin() {
-  adminViewUserId=null; adminViewData=[]; adminDetailPid=null;
-  const acsUsers=users.filter(u=>u.role!=='admin');
-  let total=0,late=0;
-  const userStats=await Promise.all(acsUsers.map(async u=>{
-    const data=await loadUserData(u.id);
+  adminViewUserId = null; adminViewData = [];
+  const acsUsers = users.filter(u=>u.role!=='admin');
+  if(!acsUsers.length){ document.getElementById('tab-admin').innerHTML='<div class="empty">Nenhum ACS cadastrado.</div>'; return; }
+  const userStats = await Promise.all(acsUsers.map(async u=>{
+    const data = await loadUserData(u.id);
     let uApplied=0,uTotal=0,uLate=0;
     data.forEach(p=>{ const s=calcStats(p); uApplied+=s.applied; uTotal+=s.total; if(s.late>0) uLate++; });
-    total+=data.length; late+=uLate;
-    const pct=uTotal>0?Math.round(uApplied/uTotal*100):0;
-    return {u, data, uLate, uTotal, uApplied, pct};
+    const pct=uTotal?Math.round(uApplied/uTotal*100):0;
+    return {u, data, uLate, pct};
   }));
-  document.getElementById('tab-admin').innerHTML=`
-    <div class="admin-hero">
-      <div class="admin-hero-title">🔐 Painel do Administrador</div>
-      <div class="admin-hero-sub">Visão geral de todos os ACS e seus pacientes</div>
-      <div class="admin-hero-stats">
-        <div class="admin-hero-stat"><div class="n">${acsUsers.length}</div><div class="l">ACS Ativos</div></div>
-        <div class="admin-hero-stat"><div class="n">${total}</div><div class="l">Total Pacientes</div></div>
-        <div class="admin-hero-stat"><div class="n">${late}</div><div class="l">Com Atraso</div></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-head">
-        <div class="card-title">👥 Todos os ACS</div>
-        <button class="btn btn-indigo btn-sm" onclick="openManageUsers()">⚙️ Editar usuários</button>
-      </div>
-      <div>
-        ${userStats.map(({u, data, uLate, pct})=>`
-          <div class="admin-user-row" onclick="openAdminACSView('${u.id}')">
-            <div class="admin-av">${initials(u.name)}</div>
-            <div style="flex:1">
-              <div class="admin-uname">${u.name}</div>
-              <div class="admin-umeta">Área ${u.area} · Micro ${u.micro} · ${data.length} pacientes</div>
-            </div>
-            <div style="display:flex;gap:16px">
-              <div style="text-align:center"><div style="font-weight:700">${data.length}</div><div style="font-size:10px;color:var(--s400)">PAC</div></div>
-              <div style="text-align:center"><div style="font-weight:700;color:var(--g)">${pct}%</div><div style="font-size:10px;color:var(--s400)">COB</div></div>
-              <div style="text-align:center"><div style="font-weight:700;color:var(--red)">${uLate}</div><div style="font-size:10px;color:var(--s400)">ATR</div></div>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    </div>`;
+  document.getElementById('tab-admin').innerHTML = `
+    <div class="admin-hero"><div class="admin-hero-title">🔐 Painel do Administrador</div><div class="admin-hero-sub">Visão geral de todos os ACS</div><div class="admin-hero-stats"><div class="admin-hero-stat"><div class="n">${acsUsers.length}</div><div class="l">ACS</div></div><div class="admin-hero-stat"><div class="n">${userStats.reduce((a,x)=>a+x.data.length,0)}</div><div class="l">Pacientes</div></div><div class="admin-hero-stat"><div class="n">${userStats.reduce((a,x)=>a+x.uLate,0)}</div><div class="l">Atrasos</div></div></div></div>
+    <div class="card"><div class="card-head"><div class="card-title">👥 Todos os ACS</div><button class="btn btn-indigo btn-sm" onclick="openManageUsers()">⚙️ Editar</button></div>
+    <div>${userStats.map(({u,data,uLate,pct})=>`
+      <div class="admin-user-row" onclick="openAdminACSView('${u.id}')">
+        <div class="admin-av">${initials(u.name)}</div>
+        <div style="flex:1"><div class="admin-uname">${u.name}</div><div class="admin-umeta">Área ${u.area} · Micro ${u.micro} · ${data.length} pacientes</div></div>
+        <div style="display:flex;gap:16px"><div style="text-align:center"><div style="font-weight:700">${data.length}</div><div style="font-size:10px;color:var(--s400)">PAC</div></div><div style="text-align:center"><div style="font-weight:700;color:var(--g)">${pct}%</div><div style="font-size:10px;color:var(--s400)">COB</div></div><div style="text-align:center"><div style="font-weight:700;color:var(--red)">${uLate}</div><div style="font-size:10px;color:var(--s400)">ATR</div></div></div>
+      </div>`).join('')}</div></div>`;
 }
 
-async function openAdminACSView(uid) { /* similar */ }
-function renderAdminACSPanel() { /* similar */ }
-function openManageUsers() { /* similar */ }
-async function saveUserEdit(uid) { /* similar, mas usando saveUsers */ }
-async function resetUserPin(uid) { /* similar */ }
+async function openAdminACSView(uid) {
+  adminViewUserId = uid;
+  adminViewData = await loadUserData(uid);
+  renderAdminACSPanel();
+}
+
+function renderAdminACSPanel() {
+  const u = users.find(x=>x.id===adminViewUserId);
+  if(!u) return;
+  const data = sortByAddress([...adminViewData]);
+  let allApplied=0,allTotal=0,lateCount=0;
+  data.forEach(p=>{ const s=calcStats(p); allApplied+=s.applied; allTotal+=s.total; if(s.late>0)lateCount++; });
+  const pct=allTotal?Math.round(allApplied/allTotal*100):0;
+  document.getElementById('tab-admin').innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+      <button class="btn btn-s" onclick="renderAdmin()">← Voltar para lista</button>
+      <div style="display:flex;align-items:center;gap:10px"><div class="admin-av">${initials(u.name)}</div><div><div style="font-weight:800">${u.name}</div><div style="font-size:12px;color:var(--s500)">Área ${u.area} · Micro ${u.micro}</div></div></div>
+      <div style="margin-left:auto;display:flex;gap:12px">
+        <div class="topbar-stat"><div class="n">${data.length}</div><div class="l">Pacientes</div></div>
+        <div class="topbar-stat"><div class="n" style="color:var(--g)">${pct}%</div><div class="l">Cobertura</div></div>
+        <div class="topbar-stat"><div class="n" style="color:var(--red)">${lateCount}</div><div class="l">Atrasos</div></div>
+      </div>
+    </div>
+    <div class="card"><div class="card-head"><div class="card-title">👥 Pacientes de ${u.name}</div>
+      <button class="btn btn-p btn-sm" onclick="openAdminNewPatient()">➕ Novo</button>
+    </div><div>${data.length ? data.map(p=>{
+      const s=calcStats(p);
+      return `<div class="person-row"><div class="pav">${initials(p.name)}</div><div style="flex:1"><div class="pname">${p.name}</div><div class="pmeta">${p.code||'—'} · ${fmtDate(p.dob)} · ${ageStr(p.dob)}</div>${p.address?`<div style="font-size:11px;color:var(--s400)">${p.address}</div>`:''}</div><div><span class="badge ${s.late>0?'bg-r':'bg-g'}">${s.late>0?s.late+' atras.':'Em dia'}</span><span style="margin-left:8px;font-weight:700">${s.pct}%</span></div></div>`;
+    }).join('') : '<div class="empty">Nenhum paciente</div>'}</div></div>`;
+}
+
+function openAdminNewPatient(){ window._savePatientCtx='admin'; openPatModal(); }
+
+function openManageUsers() {
+  document.getElementById('manageUsersBody').innerHTML = users.filter(u=>u.role!=='admin').map(u=>`
+    <div style="padding:10px 0;border-bottom:1px solid var(--s100)">
+      <div style="display:flex;align-items:center;gap:10px"><div class="admin-av">${initials(u.name)}</div><div><div style="font-weight:700">${u.name}</div><div style="font-size:12px;color:var(--s500)">Área ${u.area} · Micro ${u.micro} ${!u.pinPersonalized?'· Aguardando 1º acesso':''}</div></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+        <div class="fg"><label>Nome</label><input value="${u.name}" id="muname_${u.id}"></div>
+        <div class="fg"><label>PIN</label><input value="${u.pin}" id="mupin_${u.id}" maxlength="4"></div>
+        <div class="fg"><label>Área</label><input value="${u.area}" id="muarea_${u.id}"></div>
+        <div class="fg"><label>Micro</label><input value="${u.micro}" id="mumicro_${u.id}"></div>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:8px">
+        <button class="btn btn-p btn-sm" onclick="saveUserEdit('${u.id}')">Salvar</button>
+        <button class="btn btn-s btn-sm" onclick="resetUserPin('${u.id}')">Resetar PIN</button>
+      </div>
+    </div>`).join('');
+  document.getElementById('manageUsersModal').classList.add('open');
+}
+
+async function saveUserEdit(uid) {
+  const u = users.find(x=>x.id===uid); if(!u) return;
+  u.name = document.getElementById('muname_'+uid).value.trim() || u.name;
+  u.pin = document.getElementById('mupin_'+uid).value.trim();
+  u.area = document.getElementById('muarea_'+uid).value.trim() || u.area;
+  u.micro = document.getElementById('mumicro_'+uid).value.trim() || u.micro;
+  if(!/^\d{4}$/.test(u.pin)){ toast('PIN deve ter 4 dígitos'); return; }
+  u.pinPersonalized = true;
+  await saveUsers();
+  toast('✅ Usuário atualizado!');
+}
+
+async function resetUserPin(uid) {
+  const u = users.find(x=>x.id===uid); if(!u) return;
+  u.pin = '1234'; u.pinPersonalized = false;
+  await saveUsers();
+  toast('🔁 PIN resetado para 1234');
+  openManageUsers();
+}
 
 // ===================== IMPORT =====================
-function handleFile(file){ /* mesma lógica */ }
-async function confirmImport(){ /* similar, adicionando await save() */ }
+function handleFile(file) {
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const wb=XLSX.read(e.target.result,{type:'array'});
+    const raw=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:false});
+    if(raw.length<2){ toast('Arquivo vazio'); return; }
+    importHeader=raw[0].map(String); importRaw=raw.slice(1).filter(r=>r.some(c=>c));
+    document.getElementById('importPreviewArea').innerHTML=`<div style="margin-top:10px"><b>Prévia (${Math.min(10,importRaw.length)} de ${importRaw.length})</b><table style="width:100%"><tr style="background:#334155;color:#fff"><th>Código</th><th>Nome</th><th>Nasc.</th></tr>${importRaw.slice(0,10).map(r=>`<tr><td>${r[0]||''}</td><td>${(r[1]||'').toUpperCase()}</td><td>${parseDate(r[2]||'')||'❌'}</td></tr>`).join('')}</table></div>`;
+    document.getElementById('importActionBtns').style.display='flex';
+  };
+  reader.readAsArrayBuffer(file);
+}
 
-function renderAll(){ updateHeader(); const p=document.querySelector('.panel.active'); if(p){ const id=p.id.replace('tab-',''); renderTab(id); } }
+async function confirmImport() {
+  const existing = new Set(appData.map(p=>p.code));
+  let added=0;
+  importRaw.forEach(row=>{
+    const code=String(row[0]||'').trim();
+    const name=String(row[1]||'').trim().toUpperCase();
+    const dob=parseDate(String(row[2]||'').trim());
+    const addr=String(row[3]||'').trim();
+    if(!name||!dob) return;
+    if(code&&existing.has(code)) return;
+    appData.push(newPatient(code,name,dob,addr));
+    if(code) existing.add(code);
+    added++;
+  });
+  await save(); renderAll(); resetImport();
+  toast(`✅ ${added} importados!`);
+}
+function resetImport(){ importRaw=[]; importHeader=[]; document.getElementById('importPreviewArea').innerHTML=''; document.getElementById('importActionBtns').style.display='none'; }
+function renderAll(){ updateHeader(); renderTab(document.querySelector('.panel.active').id.replace('tab-','')); }
 
 // ===================== PWA =====================
 let deferredPrompt;
 function initPWA() {
-  if ('serviceWorker' in navigator) { /* service worker ainda local */ }
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    document.getElementById('installBanner').classList.add('show');
-  });
+  if('serviceWorker' in navigator) {
+    const sw = new Blob([`self.addEventListener('install',()=>self.skipWaiting()); self.addEventListener('fetch',e=>e.respondWith(fetch(e.request).then(r=>r).catch(()=>caches.match(e.request))));`], {type:'text/javascript'});
+    navigator.serviceWorker.register(URL.createObjectURL(sw));
+  }
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; document.getElementById('installBanner').classList.add('show'); });
+  window.addEventListener('appinstalled', () => { deferredPrompt = null; document.getElementById('installBanner').classList.remove('show'); toast('📲 App instalado!'); });
 }
+function installApp() {
+  if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(r=>{ if(r.outcome==='accepted') toast('📲 Instalação aceita!'); deferredPrompt=null; document.getElementById('installBanner').classList.remove('show'); }); }
+  else toast('Instalação não disponível. Use o menu do navegador.');
+}
+function hideInstallBanner(){ document.getElementById('installBanner').classList.remove('show'); }
 
-// ===================== INIT =====================
 async function init() {
   initFirebase();
   await initLoginScreen();
@@ -1446,7 +874,6 @@ async function init() {
   window.addEventListener('online', ()=>document.getElementById('offlineBar').style.display='none');
   window.addEventListener('offline', ()=>document.getElementById('offlineBar').style.display='block');
 }
-
 init();
 </script>
 </body>
