@@ -33,9 +33,12 @@
 <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
 
 <!-- SEO / Description -->
-<meta name="description" content="Sistema de controle vacinal para Agentes Comunitários de Saúde. Gerencie vacinas, visitas e relatórios offline.">
+<meta name="description" content="Sistema de controle vacinal para Agentes Comunitários de Saúde. Gerencie vacinas e relatórios offline.">
 <meta name="keywords" content="vacinação, ACS, saúde, controle vacinal, agente comunitário">
 <meta name="author" content="VacinaControl">
+
+<!-- Apple Splash Screens (iOS) -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,12 +46,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <!-- External libs -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.6.0/jspdf.plugin.autotable.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.6.0/jspdf.plugin.autotable.min.js">
+</script>
 <style>
-/* ========== ESTILOS COMPLETOS (mantidos do original, sem alterações) ========== */
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --g:#059669;--gd:#047857;--gl:#ecfdf5;--g2:#d1fae5;
@@ -110,19 +114,61 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
 }
 #offlineBar.show{display:block}
 
-/* Safe area padding for bottom navigation on mobile */
-.tabs{
-  padding-bottom:env(safe-area-inset-bottom);
+/* Sidebar (menu sanduíche) */
+.sidebar-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1500;
+  backdrop-filter:blur(3px);
 }
-
-/* Standalone mode adjustments */
-@media (display-mode: standalone) {
-  .app{padding-top:8px}
-  #loginScreen{padding-top:env(safe-area-inset-top)}
+.sidebar-overlay.open{display:block}
+#sidebar{
+  position:fixed;top:0;left:0;bottom:0;z-index:1600;
+  width:280px;max-width:85vw;
+  background:#0f172a;
+  box-shadow:4px 0 30px rgba(0,0,0,.4);
+  transform:translateX(-100%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;
+  padding-top:env(safe-area-inset-top);
 }
+#sidebar.open{transform:translateX(0)}
+.sidebar-head{
+  padding:20px 20px 16px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;gap:12px;
+}
+.sidebar-logo{font-size:20px;font-weight:800;color:#fff}
+.sidebar-logo span{color:#34d399}
+.sidebar-close{
+  margin-left:auto;background:none;border:none;color:rgba(255,255,255,.5);
+  font-size:22px;cursor:pointer;padding:4px 8px;
+}
+.sidebar-nav{flex:1;overflow-y:auto;padding:12px 0}
+.sidebar-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 20px;color:rgba(255,255,255,.6);
+  font-weight:600;font-size:14px;cursor:pointer;
+  transition:all .15s;border-left:3px solid transparent;
+}
+.sidebar-item:hover{background:rgba(255,255,255,.05);color:#fff}
+.sidebar-item.active{background:rgba(5,150,105,.15);color:#34d399;border-left-color:#34d399}
+.sidebar-item .ico{font-size:18px;width:24px;text-align:center}
+.sidebar-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,.08)}
+.sidebar-footer .sidebar-item{color:rgba(255,255,255,.4);font-size:13px}
+.sidebar-item.admin-item{display:none}
+.sidebar-item.admin-item.visible{display:flex}
 
-/* Prevent text selection on tap (app feel) */
-.tab,.btn,.person-row,.user-card,.late-card,.admin-user-row{
+/* Hamburger button */
+.hamburger-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:40px;height:40px;border-radius:10px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+  color:#fff;font-size:20px;cursor:pointer;margin-right:8px;
+  transition:background .15s;
+}
+.hamburger-btn:hover{background:rgba(255,255,255,.15)}
+
+/* Prevent text selection on tap */
+.tab,.btn,.person-row,.user-card,.late-card,.admin-user-row,.sidebar-item{
   -webkit-tap-highlight-color:transparent;
   -webkit-touch-callout:none;
 }
@@ -217,8 +263,8 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
 /* TOPBAR */
 .topbar{
   background:linear-gradient(135deg,#0a0f1e,#0d2137);
-  border-radius:var(--rxl);padding:0 20px;
-  display:flex;align-items:center;gap:16px;
+  border-radius:var(--rxl);padding:0 16px;
+  display:flex;align-items:center;gap:10px;
   margin-bottom:14px;height:62px;
   box-shadow:0 4px 24px rgba(0,0,0,.25);
   position:relative;overflow:hidden;
@@ -242,12 +288,6 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
 .topbar-stat .l{font-size:10px;color:rgba(255,255,255,.4);margin-top:1px;text-transform:uppercase;letter-spacing:.4px}
 .topbar-logout{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:7px 14px;color:rgba(255,255,255,.6);font-size:13px;font-weight:600;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
 .topbar-logout:hover{background:rgba(220,38,38,.2);border-color:rgba(220,38,38,.4);color:#fca5a5}
-
-/* TABS */
-.tabs{display:flex;background:#fff;border-radius:var(--rl);border:1px solid var(--s200);overflow:hidden;margin-bottom:14px;box-shadow:var(--sh);overflow-x:auto;-webkit-overflow-scrolling:touch}
-.tab{flex:1;padding:12px 6px;cursor:pointer;font-size:13px;font-weight:700;color:var(--s500);text-align:center;transition:all .15s;border-bottom:3px solid transparent;white-space:nowrap;min-width:80px}
-.tab:hover{background:var(--s50);color:var(--s700)}
-.tab.active{color:var(--g);border-bottom-color:var(--g);background:var(--gl)}
 
 /* PANELS */
 .panel{display:none}.panel.active{display:block}
@@ -342,21 +382,6 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
 .vac-dot.ok{background:#22c55e}.vac-dot.late{background:#ef4444}.vac-dot.pending{background:var(--s300)}.vac-dot.na{background:var(--s300)}
 .vac-name{font-size:13px;font-weight:600;color:var(--s700);line-height:1.3}
 .vac-date{font-size:11px;color:var(--s500);margin-top:2px;font-family:'JetBrains Mono',monospace}
-
-/* VISITS */
-.visit-section{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1.5px solid #93c5fd;border-radius:var(--rl);padding:16px;margin-bottom:14px}
-.visit-title{font-size:14px;font-weight:700;color:var(--blue);margin-bottom:12px;display:flex;align-items:center;gap:7px}
-.visit-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.visit-card{background:#fff;border-radius:var(--r);padding:14px;border:1px solid #bfdbfe}
-.visit-label{font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
-.visit-status-row{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
-.visit-date-input{padding:7px 10px;border:1.5px solid #bfdbfe;border-radius:var(--r);font-size:13px;font-family:'Syne',sans-serif;background:#fff;outline:none;flex:1;min-width:120px}
-.visit-date-input:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(37,99,235,.1)}
-.visit-check{width:18px;height:18px;cursor:pointer;accent-color:var(--blue)}
-.visit-obs{width:100%;padding:8px 11px;border:1.5px solid #bfdbfe;border-radius:var(--r);font-size:13px;font-family:'Syne',sans-serif;resize:vertical;min-height:52px;margin-top:8px;outline:none}
-.visit-obs:focus{border-color:var(--blue)}
-.visit-done-badge{background:#d1fae5;color:#065f46;border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700}
-.visit-pending-badge{background:var(--aml);color:var(--am);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700}
 
 /* DETAIL */
 .dhead{display:flex;align-items:flex-start;gap:14px;padding:18px;border-bottom:1px solid var(--s100)}
@@ -465,23 +490,10 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
   .dash-hero{grid-template-columns:1fr}
   .dash-hero-pct{font-size:48px}
   .dash-track{width:100%}
-  .visit-grid{grid-template-columns:1fr}
   .map-grid{grid-template-columns:1fr}
   .admin-hero{flex-direction:column}
   .topbar-stats{display:none}
-  .tab{font-size:11px;padding:10px 4px;min-width:60px}
 }
-
-/* First login overlay */
-#firstLoginOverlay{
-  display:none; position:fixed; inset:0; background:rgba(0,0,0,.6);
-  z-index:2000; align-items:center; justify-content:center; padding:20px;
-  backdrop-filter:blur(6px);
-}
-#firstLoginOverlay.open{display:flex}
-.first-login-box{background:#fff;border-radius:24px;padding:32px 28px;max-width:400px;width:100%;box-shadow:0 30px 70px rgba(0,0,0,.4);text-align:center}
-.first-login-box h3{font-size:22px;font-weight:800;color:var(--s900);margin-bottom:8px}
-.first-login-box p{font-size:14px;color:var(--s500);margin-bottom:24px}
 </style>
 </head>
 <body>
@@ -519,17 +531,9 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
         <div class="pin-error" id="pinError"></div>
       </div>
       <button class="btn-login" id="btnLogin" onclick="doLogin()">Entrar →</button>
-      <div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:16px;text-align:center">
-        Feito por: <strong>Marcelo Oliveira</strong> — Todos os direitos reservados.
-      </div>
-      <a style="display:block;text-align:center;font-size:12px;color:rgba(255,255,255,.3);margin-top:12px;cursor:pointer;text-decoration:underline" onclick="forgotPin()">Esqueci meu PIN</a>
+      <div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:16px;text-align:center">Feito por: <span style="font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.5)">Marcelo Oliveira</span> · Todos os direitos reservados<span style="font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.5)"></span></div>
     </div>
   </div>
-</div>
-
-<!-- ========================== FIRST LOGIN / RECOVERY OVERLAY ========================== -->
-<div id="firstLoginOverlay">
-  <div class="first-login-box" id="firstLoginContent"></div>
 </div>
 
 <!-- ========================== APP SCREEN ========================== -->
@@ -538,6 +542,7 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
 
 <!-- TOPBAR -->
 <div class="topbar">
+  <button class="hamburger-btn" onclick="toggleSidebar()" aria-label="Menu">☰</button>
   <div class="topbar-logo">💉 Vacina<span>Control</span></div>
   <div class="topbar-sep"></div>
   <div class="topbar-user">
@@ -555,16 +560,27 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
   <button class="topbar-logout" onclick="doLogout()">Sair</button>
 </div>
 
-<!-- TABS -->
-<div class="tabs" id="mainTabs">
-  <div class="tab active" onclick="switchTab('dashboard')">📊 Dashboard</div>
-  <div class="tab" onclick="switchTab('pacientes')">👥 Pacientes</div>
-  <div class="tab" onclick="switchTab('cadastrar')">➕ Cadastrar</div>
-  <div class="tab" onclick="switchTab('importar')">📥 Importar</div>
-  <div class="tab" onclick="switchTab('atrasados')">⚠️ Atrasados</div>
-  <div class="tab" onclick="switchTab('visitas')">🏠 Visitas</div>
-  <div class="tab" onclick="switchTab('relatorio')">📋 Relatório</div>
-  <div class="tab tab-admin" onclick="switchTab('admin')" style="display:none">🔐 Admin</div>
+<!-- SIDEBAR OVERLAY -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="sidebar-head">
+    <div class="sidebar-logo">💉 <span>VacinaControl</span></div>
+    <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+  </div>
+  <div class="sidebar-nav" id="sidebarNav">
+    <div class="sidebar-item active" data-tab="dashboard" onclick="navigateTo('dashboard')"><span class="ico">📊</span> Dashboard</div>
+    <div class="sidebar-item" data-tab="pacientes" onclick="navigateTo('pacientes')"><span class="ico">👥</span> Pacientes</div>
+    <div class="sidebar-item" data-tab="cadastrar" onclick="navigateTo('cadastrar')"><span class="ico">➕</span> Cadastrar</div>
+    <div class="sidebar-item" data-tab="importar" onclick="navigateTo('importar')"><span class="ico">📥</span> Importar</div>
+    <div class="sidebar-item" data-tab="atrasados" onclick="navigateTo('atrasados')"><span class="ico">⚠️</span> Atrasados</div>
+    <div class="sidebar-item" data-tab="relatorio" onclick="navigateTo('relatorio')"><span class="ico">📋</span> Relatório</div>
+    <div class="sidebar-item admin-item" data-tab="admin" onclick="navigateTo('admin')"><span class="ico">🔐</span> Admin</div>
+  </div>
+  <div class="sidebar-footer">
+    <div class="sidebar-item" onclick="openCfg()"><span class="ico">⚙️</span> Meu perfil</div>
+  </div>
 </div>
 
 <!-- ===== DASHBOARD ===== -->
@@ -587,7 +603,7 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
 <!-- ===== PACIENTES ===== -->
 <div class="panel" id="tab-pacientes">
   <div class="card">
-    <div class="filter-bar" id="patientsFilterBar">
+    <div class="filter-bar">
       <input type="text" placeholder="🔍 Buscar nome ou código..." id="searchInp" oninput="renderPatients()" style="flex:1;min-width:180px">
       <select id="filterStatus" onchange="renderPatients()">
         <option value="">Todos</option>
@@ -599,6 +615,7 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
     <div id="patientsList"></div>
   </div>
 </div>
+
 <!-- ===== CADASTRAR ===== -->
 <div class="panel" id="tab-cadastrar">
   <div class="card">
@@ -651,11 +668,6 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
   <div id="lateList"></div>
 </div>
 
-<!-- ===== VISITAS ===== -->
-<div class="panel" id="tab-visitas">
-  <div id="visitasList"></div>
-</div>
-
 <!-- ===== RELATÓRIO ===== -->
 <div class="panel" id="tab-relatorio">
   <div class="card">
@@ -681,8 +693,8 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
   </div>
   <div class="card">
     <div class="card-head">
-      <div class="card-title">👥 Todos os ACS — clique para gerenciar</div>
-      <button class="btn btn-indigo btn-sm" onclick="openManageUsers()">⚙️ Editar usuários</button>
+      <div class="card-title">👥 Todos os ACS</div>
+      <button class="btn btn-indigo btn-sm" onclick="openManageUsers()">⚙️ Gerenciar usuários</button>
     </div>
     <div id="adminUserList"></div>
   </div>
@@ -693,7 +705,7 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
 
 <!-- ===== MODALS ===== -->
 <div class="modal-ov" id="vacModal">
-  <div class="modal" style="max-width:440px">
+  <div class="modal">
     <div class="modal-head">
       <div class="modal-title" id="vacModalTitle">Vacina</div>
       <button class="modal-close" onclick="closeVacModal()">✕</button>
@@ -755,7 +767,27 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
 
 <div id="toast-el"></div>
 
-// ===================== VACCINES META =====================
+<script>
+// ===================== USERS CONFIG =====================
+const DEFAULT_USERS = [
+  {id:'u01',name:'Wanessa Becker',area:'09',micro:'01',pin:'1234',role:'acs'},
+  {id:'u02',name:'Leise',area:'09',micro:'02',pin:'1234',role:'acs'},
+  {id:'u03',name:'Kézia',area:'09',micro:'03',pin:'1234',role:'acs'},
+  {id:'u04',name:'Poli',area:'09',micro:'04',pin:'1234',role:'acs'},
+  {id:'u05',name:'Sunamita',area:'09',micro:'05',pin:'1234',role:'acs'},
+  {id:'u06',name:'Dulci',area:'10',micro:'01',pin:'1234',role:'acs'},
+  {id:'u07',name:'Vanessa Bodziak',area:'10',micro:'02',pin:'1234',role:'acs'},
+  {id:'u08',name:'Marinete',area:'10',micro:'03',pin:'1234',role:'acs'},
+  {id:'u09',name:'Chayane',area:'10',micro:'04',pin:'1234',role:'acs'},
+  {id:'u10',name:'Marcelo Oliveira',area:'10',micro:'05',pin:'1234',role:'acs'},
+  {id:'u11',name:'Jacqueline',area:'15',micro:'01',pin:'1234',role:'acs'},
+  {id:'u12',name:'Vanessa Dias',area:'15',micro:'02',pin:'1234',role:'acs'},
+  {id:'u13',name:'Valéria',area:'15',micro:'03',pin:'1234',role:'acs'},
+  {id:'u14',name:'Carol',area:'15',micro:'04',pin:'1234',role:'acs'},
+  {id:'u15',name:'Eduardo',area:'15',micro:'05',pin:'1234',role:'acs'},
+  {id:'admin',name:'Administrador',area:'—',micro:'—',pin:'0000',role:'admin'},
+];
+
 const VACC_META = [
   {id:0,name:'BCG - Dose Única',months:0,period:'AO NASCER'},
   {id:1,name:'1ª Dose Hepatite B',months:0,period:'AO NASCER'},
@@ -803,21 +835,41 @@ let currentVacEdit = null;
 let currentPatEdit = null;
 let detailPid = null;
 let importRaw = [], importHeader = [], importPreMapped = false;
-let adminViewUserId = null, adminViewData = [], adminDetailPid = null;
+let adminViewUserId = null;
+let adminViewData = [];
+let adminDetailPid = null;
 
 // ===================== UTILS =====================
 function getUserDataKey(uid) { return `vacinas_mu_data_${uid}`; }
-function loadUsers() { try { return JSON.parse(localStorage.getItem(USERS_KEY)) || DEFAULT_USERS; } catch(e){ return DEFAULT_USERS; } }
+function loadUsers() {
+  try { return JSON.parse(localStorage.getItem(USERS_KEY)) || DEFAULT_USERS; }
+  catch(e){ return DEFAULT_USERS; }
+}
 function saveUsers() { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
-function loadUserData(uid) { try { return JSON.parse(localStorage.getItem(getUserDataKey(uid))) || []; } catch(e){ return []; } }
+function loadUserData(uid) {
+  try { return JSON.parse(localStorage.getItem(getUserDataKey(uid))) || []; }
+  catch(e){ return []; }
+}
 function saveUserData(uid, data) { localStorage.setItem(getUserDataKey(uid), JSON.stringify(data)); }
-function save() { if (currentUser) saveUserData(currentUser.id, appData); }
+function save() { saveUserData(currentUser.id, appData); }
 
 function initials(name) { return name.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase(); }
 function fmtDate(d) { if(!d) return '—'; try { return new Date(d+'T12:00:00').toLocaleDateString('pt-BR'); } catch(e){ return d; } }
-function addMonths(dob, m) { const d = new Date(dob+'T12:00:00'); d.setMonth(d.getMonth() + parseInt(m)); return d.toISOString().slice(0,10); }
-function ageMonths(dob) { const n = new Date(dob+'T12:00:00'), h = new Date(); return (h.getFullYear()-n.getFullYear())*12 + (h.getMonth()-n.getMonth()); }
-function ageStr(dob) { const n = new Date(dob+'T12:00:00'), h = new Date(); let y=h.getFullYear()-n.getFullYear(), mo=h.getMonth()-n.getMonth(), d=h.getDate()-n.getDate(); if(d<0) mo--; if(mo<0){y--;mo+=12;} return y>0 ? y+'a '+mo+'m' : mo+'m'; }
+function addMonths(dob, m) {
+  const d = new Date(dob+'T12:00:00');
+  d.setMonth(d.getMonth() + parseInt(m));
+  return d.toISOString().slice(0,10);
+}
+function ageMonths(dob) {
+  const n = new Date(dob+'T12:00:00'), h = new Date();
+  return (h.getFullYear()-n.getFullYear())*12 + (h.getMonth()-n.getMonth());
+}
+function ageStr(dob) {
+  const n = new Date(dob+'T12:00:00'), h = new Date();
+  let y=h.getFullYear()-n.getFullYear(), mo=h.getMonth()-n.getMonth(), d=h.getDate()-n.getDate();
+  if(d<0) mo--; if(mo<0){y--;mo+=12;}
+  return y>0 ? y+'a '+mo+'m' : mo+'m';
+}
 function parseDate(s) {
   if(!s) return '';
   s = String(s).trim();
@@ -827,7 +879,11 @@ function parseDate(s) {
   if(/^\d{5,}$/.test(s)){ const ts=(parseInt(s)-25569)*86400000; return new Date(ts).toISOString().slice(0,10); }
   return '';
 }
-function toast(msg,type='success',dur=3200) { const t=document.getElementById('toast-el'); t.textContent=msg; t.className='show '+type; clearTimeout(t._t); t._t=setTimeout(()=>t.className='',dur); }
+function toast(msg,type='success',dur=3200) {
+  const t=document.getElementById('toast-el');
+  t.textContent=msg; t.className='show '+type;
+  clearTimeout(t._t); t._t=setTimeout(()=>t.className='',dur);
+}
 function calcStats(p) {
   const today=new Date(), ageMo=ageMonths(p.dob);
   let total=0,applied=0,late=0;
@@ -853,38 +909,22 @@ function newPatient(code,name,dob,addr){
   return {
     id:(code||name)+Date.now().toString(36)+Math.random().toString(36).slice(2,6),
     code,name,dob,address:addr,
-    vaccines:VACC_META.map(mv=>({name:mv.name,months:mv.months,period:mv.period,status:'',date:'',applied:false,na:false})),
-    visits:{v1:{done:false,date:'',obs:''},v2:{done:false,date:'',obs:''}}
+    vaccines:VACC_META.map(mv=>({name:mv.name,months:mv.months,period:mv.period,status:'',date:'',applied:false,na:false}))
   };
 }
 
-// ---------- ADDRESS PARSING & SORTING ----------
-function parseAddress(addr) {
-  if (!addr) return { street: 'ZZZ', number: 99999, complement: 'ZZZ' };
-  const parts = addr.split(',').map(p => p.trim());
-  const street = (parts[0] || 'ZZZ').toUpperCase();
-  let number = 99999;
-  let complement = 'ZZZ';
-  if (parts[1]) {
-    const numStr = parts[1].replace(/\D/g, '');
-    if (numStr) number = parseInt(numStr, 10) || 99999;
-    const rest = parts.slice(2).join(' ').trim();
-    if (rest) complement = rest.toUpperCase();
-  }
-  return { street, number, complement };
+// ===================== SIDEBAR =====================
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
 }
-function sortByAddress(list) {
-  return [...list].sort((a, b) => {
-    const pa = parseAddress(a.address);
-    const pb = parseAddress(b.address);
-    if (pa.street < pb.street) return -1;
-    if (pa.street > pb.street) return 1;
-    if (pa.number < pb.number) return -1;
-    if (pa.number > pb.number) return 1;
-    if (pa.complement < pb.complement) return 1;
-    if (pa.complement > pb.complement) return -1;
-    return 0;
-  });
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+function navigateTo(tab) {
+  closeSidebar();
+  switchTab(tab);
 }
 
 // ===================== LOGIN =====================
@@ -892,155 +932,63 @@ function initLoginScreen() {
   users = loadUsers();
   const grid = document.getElementById('loginUsersGrid');
   const acsUsers = users.filter(u=>u.role!=='admin');
-  grid.innerHTML = acsUsers.map(u=>
-    `<div class="user-card" id="uc_${u.id}" onclick="selectUser('${u.id}')">
+  grid.innerHTML = acsUsers.map(u=>`
+    <div class="user-card" id="uc_${u.id}" onclick="selectUser('${u.id}')">
       <div class="user-check">✓</div>
       <div class="user-avatar">${initials(u.name)}</div>
       <div class="user-name">${u.name}</div>
       <div class="user-area">Área ${u.area} · Micro ${u.micro}</div>
-    </div>`
-  ).join('');
+    </div>`).join('');
 }
 
 let selectedUserId = null;
 function selectUser(uid) {
   selectedUserId = uid;
   document.querySelectorAll('.user-card').forEach(c=>c.classList.remove('selected'));
-  const el=document.getElementById('uc_'+uid); if(el) el.classList.add('selected');
+  const el=document.getElementById('uc_'+uid);
+  if(el) el.classList.add('selected');
   document.getElementById('pin0').focus();
   document.getElementById('pinError').textContent='';
 }
-function pinNext(i) { const v=document.getElementById('pin'+i).value; if(v && i<3) document.getElementById('pin'+(i+1)).focus(); }
-function pinKey(e,i) { if(e.key==='Backspace'&&!document.getElementById('pin'+i).value&&i>0) document.getElementById('pin'+(i-1)).focus(); if(e.key==='Enter') doLogin(); }
-function getPin() { return [0,1,2,3].map(i=>document.getElementById('pin'+i).value).join(''); }
-function clearPin() { [0,1,2,3].forEach(i=>{ document.getElementById('pin'+i).value=''; }); document.getElementById('pin0').focus(); }
-
-function forgotPin() {
-  document.getElementById('firstLoginContent').innerHTML = `
-    <h3>🔐 Esqueci meu PIN</h3>
-    <p>Por questões de segurança, apenas o <strong>administrador</strong> pode redefinir o PIN de um ACS.<br><br>
-    Procure o responsável pelo sistema e solicite a redefinição.</p>
-    <button class="btn btn-s" onclick="closeFirstLoginOverlay()">Fechar</button>
-  `;
-  document.getElementById('firstLoginOverlay').classList.add('open');
+function pinNext(i) {
+  const v=document.getElementById('pin'+i).value;
+  if(v && i<3) document.getElementById('pin'+(i+1)).focus();
 }
-
-function closeFirstLoginOverlay() {
-  document.getElementById('firstLoginOverlay').classList.remove('open');
+function pinKey(e,i) {
+  if(e.key==='Backspace'&&!document.getElementById('pin'+i).value&&i>0) document.getElementById('pin'+(i-1)).focus();
+  if(e.key==='Enter') doLogin();
 }
-
+function getPin() {
+  return [0,1,2,3].map(i=>document.getElementById('pin'+i).value).join('');
+}
+function clearPin() {
+  [0,1,2,3].forEach(i=>{ document.getElementById('pin'+i).value=''; });
+  document.getElementById('pin0').focus();
+}
 function doLogin() {
-  try {
-    const pin = getPin();
-    if (!pin || pin.length !== 4) {
-      document.getElementById('pinError').textContent = 'Digite os 4 dígitos do PIN.';
-      return;
-    }
-
-    // Admin login (PIN 0000)
-    const adminUser = users.find(u => u.role === 'admin');
-    if (adminUser && pin === adminUser.pin) {
-      loginAs(adminUser);
-      return;
-    }
-
-    // ACS login
-    if (!selectedUserId) {
-      document.getElementById('pinError').textContent = 'Selecione um ACS primeiro.';
-      return;
-    }
-    const user = users.find(u => u.id === selectedUserId);
-    if (!user) {
-      document.getElementById('pinError').textContent = 'Usuário não encontrado.';
-      return;
-    }
-    if (pin !== user.pin) {
-      document.getElementById('pinError').textContent = 'PIN incorreto. Tente novamente.';
-      clearPin();
-      return;
-    }
-
-    // Primeiro acesso: forçar troca do PIN padrão
-    if (pin === '1234') {
-      window._firstLoginUser = user;
-      document.getElementById('loginScreen').style.display = 'none';
-      showFirstLoginSetup();
-      return;
-    }
-
-    loginAs(user);
-  } catch (err) {
-    console.error('Erro no login:', err);
-    document.getElementById('pinError').textContent = 'Ocorreu um erro inesperado. Recarregue a página.';
-  }
-}
-
-function showFirstLoginSetup() {
-  const user = window._firstLoginUser;
-  if (!user) return;
-  document.getElementById('firstLoginContent').innerHTML = `
-    <h3>🔐 Primeiro acesso</h3>
-    <p>Olá, <strong>${user.name}</strong>!<br>Crie um novo PIN de 4 dígitos para proteger sua conta.</p>
-    <div style="display:flex;gap:10px;justify-content:center;margin:20px 0">
-      ${[0,1,2,3].map(i => '<input type="password" maxlength="1" class="pin-input" id="newPin'+i+'" oninput="handleNewPinInput('+i+')" onkeydown="handleNewPinKey(event,'+i+')" style="width:52px;height:56px;font-size:22px;text-align:center">').join('')}
-    </div>
-    <div id="newPinError" style="color:#dc2626;font-size:13px;margin-bottom:12px"></div>
-    <button class="btn btn-p" onclick="saveFirstPin()">💾 Salvar PIN</button>
-    <button class="btn btn-s" style="margin-top:8px" onclick="cancelFirstLogin()">Cancelar</button>
-  `;
-  document.getElementById('firstLoginOverlay').classList.add('open');
-  setTimeout(() => { const el = document.getElementById('newPin0'); if (el) el.focus(); }, 200);
-}
-
-function handleNewPinInput(i) {
-  const v = document.getElementById('newPin'+i).value;
-  if (v && i < 3) document.getElementById('newPin'+(i+1)).focus();
-}
-function handleNewPinKey(e, i) {
-  if (e.key === 'Backspace' && !document.getElementById('newPin'+i).value && i > 0) document.getElementById('newPin'+(i-1)).focus();
-  if (e.key === 'Enter') saveFirstPin();
-}
-
-function saveFirstPin() {
-  const pin = [0,1,2,3].map(i => document.getElementById('newPin'+i).value).join('');
-  const errEl = document.getElementById('newPinError');
-  if (pin.length !== 4 || !/^\d{4}$/.test(pin)) {
-    errEl.textContent = 'Digite um PIN de 4 dígitos.';
-    return;
-  }
-  if (pin === '1234' || pin === '0000') {
-    errEl.textContent = 'Escolha um PIN diferente do padrão.';
-    return;
-  }
-
-  const user = window._firstLoginUser;
-  if (!user) return;
-  user.pin = pin;
-  saveUsers();
-  closeFirstLoginOverlay();
+  const pin=getPin();
+  const adminUser=users.find(u=>u.role==='admin');
+  if(adminUser&&pin===adminUser.pin) { loginAs(adminUser); return; }
+  if(!selectedUserId){ document.getElementById('pinError').textContent='Selecione um ACS primeiro'; return; }
+  const user=users.find(u=>u.id===selectedUserId);
+  if(!user){ document.getElementById('pinError').textContent='Usuário não encontrado'; return; }
+  if(pin!==user.pin){ document.getElementById('pinError').textContent='PIN incorreto. Tente novamente.'; clearPin(); return; }
   loginAs(user);
 }
-
-function cancelFirstLogin() {
-  closeFirstLoginOverlay();
-  window._firstLoginUser = null;
-  document.getElementById('loginScreen').style.display = 'flex';
-  clearPin();
-}
-
 function loginAs(user) {
-  currentUser = user;
-  appData = loadUserData(user.id);
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('appScreen').style.display = 'block';
-  document.getElementById('topAv').textContent = initials(user.name);
-  document.getElementById('topName').textContent = user.name;
-  document.getElementById('topMeta').textContent = `Área ${user.area} · Micro ${user.micro}`;
-  if (user.role === 'admin') {
-    document.querySelector('.tab-admin').style.display = '';
+  currentUser=user;
+  appData=loadUserData(user.id);
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appScreen').style.display='block';
+  document.getElementById('topAv').textContent=initials(user.name);
+  document.getElementById('topName').textContent=user.name;
+  document.getElementById('topMeta').textContent=`Área ${user.area} · Micro ${user.micro}`;
+  const adminItem = document.querySelector('.sidebar-item.admin-item');
+  if(user.role==='admin') {
+    adminItem.classList.add('visible');
     switchTab('admin');
   } else {
-    document.querySelector('.tab-admin').style.display = 'none';
+    adminItem.classList.remove('visible');
     switchTab('dashboard');
   }
   toast(`Bem-vindo(a), ${user.name.split(' ')[0]}! 👋`);
@@ -1050,30 +998,30 @@ function loginAs(user) {
     setTimeout(() => switchTab(target), 100);
   }
 }
-
 function doLogout() {
-  currentUser = null; appData = [];
-  document.getElementById('appScreen').style.display = 'none';
-  document.getElementById('loginScreen').style.display = 'flex';
-  selectedUserId = null;
-  document.querySelectorAll('.user-card').forEach(c => c.classList.remove('selected'));
+  currentUser=null; appData=[];
+  document.getElementById('appScreen').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+  selectedUserId=null;
+  document.querySelectorAll('.user-card').forEach(c=>c.classList.remove('selected'));
   clearPin();
-  document.getElementById('pinError').textContent = '';
+  document.getElementById('pinError').textContent='';
 }
 
 // ===================== TABS =====================
 function switchTab(tab) {
-  const tabs=['dashboard','pacientes','cadastrar','importar','atrasados','visitas','relatorio','admin'];
-  document.querySelectorAll('.tab').forEach((el,i)=>{ el.classList.toggle('active',tabs[i]===tab); });
+  const tabs=['dashboard','pacientes','cadastrar','importar','atrasados','relatorio','admin'];
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   const panel=document.getElementById('tab-'+tab);
   if(panel){ panel.classList.add('active'); renderTab(tab); }
+  document.querySelectorAll('.sidebar-item').forEach(el=>{
+    el.classList.toggle('active', el.dataset.tab === tab);
+  });
 }
 function renderTab(tab) {
   if(tab==='dashboard') renderDashboard();
   else if(tab==='pacientes') renderPatients();
   else if(tab==='atrasados') renderLate();
-  else if(tab==='visitas') renderVisitasList();
   else if(tab==='relatorio') renderRelatorio();
   else if(tab==='admin') renderAdmin();
 }
@@ -1123,7 +1071,8 @@ function renderDashboard() {
   `;
   let html='';
   PERIODS.forEach(per=>{
-    const d=periodos[per]; if(!d||d.total===0) return;
+    const d=periodos[per];
+    if(!d||d.total===0) return;
     const p2=Math.round(d.applied/d.total*100);
     const cls=p2>=80?'ok':p2>=50?'warn':'bad';
     html+=`<div class="period-bar-row">
@@ -1145,7 +1094,6 @@ function renderPatients() {
   if(q) list=list.filter(p=>p.name.toLowerCase().includes(q)||p.code.includes(q)||(p.address||'').toLowerCase().includes(q));
   if(filter==='late') list=list.filter(p=>isLate(p));
   if(filter==='ok') list=list.filter(p=>!isLate(p));
-  list = sortByAddress(list);
   const grouped={};
   list.forEach(p=>{ const addr=p.address?p.address.split(',')[0].trim().toUpperCase():'SEM ENDEREÇO'; if(!grouped[addr])grouped[addr]=[]; grouped[addr].push(p); });
   let html='';
@@ -1154,7 +1102,7 @@ function renderPatients() {
     grouped[addr].forEach(p=>{
       const s=calcStats(p);
       const cls=s.late>0?'bad':s.pct<80?'warn':'ok';
-      html+=`<div class="person-row" onclick="openPatientDetail('${p.id}')">
+      html+=`<div class="person-row" onclick="openPatientDetail(${JSON.stringify(p.id).replace(/"/g,'&quot;')})">
         <div class="pav">${initials(p.name)}</div>
         <div style="flex:1;min-width:0">
           <div class="pname">${p.name}</div>
@@ -1174,75 +1122,40 @@ function renderPatients() {
 
 // ===================== PATIENT DETAIL =====================
 function openPatientDetail(pid) {
-  detailPid = pid;
-  const p = appData.find(x => x.id === pid);
-  if (!p) return;
-  const container = document.getElementById('tab-pacientes');
-  
-  // Oculta a barra de filtros
-  const filterBar = document.getElementById('patientsFilterBar');
-  if (filterBar) filterBar.style.display = 'none';
-  
-  const s = calcStats(p);
-  const byPeriod = {};
-  PERIODS.forEach(per => byPeriod[per] = []);
-  (p.vaccines || []).forEach((v, vi) => {
-    if (!byPeriod[v.period]) byPeriod[v.period] = [];
-    byPeriod[v.period].push({ ...v, _vi: vi });
-  });
-  let vaccHtml = '';
-  PERIODS.forEach(per => {
-    const vs = byPeriod[per];
-    if (!vs.length) return;
-    const app2 = vs.filter(v => v.applied).length;
-    vaccHtml += `<div class="period-group"><div class="period-head"><span>${per}</span><span>${app2}/${vs.length}</span></div><div class="period-body">`;
-    vs.forEach(v => {
-      const today = new Date();
-      const dueDate = new Date(addMonths(p.dob, v.months) + 'T12:00:00');
-      let cls2 = '', dotCls = 'pending';
-      if (v.na) { cls2 = 'na'; dotCls = 'na'; }
-      else if (v.applied) { cls2 = 'ok'; dotCls = 'ok'; }
-      else if (today > dueDate) { cls2 = 'late'; dotCls = 'late'; }
-      vaccHtml += `<div class="vac-item ${cls2}" onclick="openVacModal('${p.id}',${v._vi})">
+  detailPid=pid;
+  const p=appData.find(x=>x.id===pid);
+  if(!p) return;
+  const container=document.getElementById('tab-pacientes');
+  const s=calcStats(p);
+  const byPeriod={};
+  PERIODS.forEach(per=>byPeriod[per]=[]);
+  (p.vaccines||[]).forEach((v,vi)=>{ if(!byPeriod[v.period])byPeriod[v.period]=[]; byPeriod[v.period].push({...v,_vi:vi}); });
+  let vaccHtml='';
+  PERIODS.forEach(per=>{
+    const vs=byPeriod[per];
+    if(!vs.length) return;
+    const app2=vs.filter(v=>v.applied).length;
+    vaccHtml+=`<div class="period-group"><div class="period-head"><span>${per}</span><span>${app2}/${vs.length}</span></div><div class="period-body">`;
+    vs.forEach(v=>{
+      const today=new Date();
+      const dueDate=new Date(addMonths(p.dob,v.months)+'T12:00:00');
+      let cls2='',dotCls='pending';
+      if(v.na){cls2='na';dotCls='na';}
+      else if(v.applied){cls2='ok';dotCls='ok';}
+      else if(today>dueDate){cls2='late';dotCls='late';}
+      vaccHtml+=`<div class="vac-item ${cls2}" onclick="openVacModal(${JSON.stringify(p.id).replace(/"/g,'&quot;')},${v._vi})">
         <div class="vac-dot ${dotCls}"></div>
-        <div><div class="vac-name">${v.name}</div><div class="vac-date">${v.applied ? fmtDate(v.date) : v.na ? 'N/A' : today > dueDate ? '⚠️ Atrasada' : 'Pendente'}</div></div>
+        <div><div class="vac-name">${v.name}</div><div class="vac-date">${v.applied?fmtDate(v.date):v.na?'N/A':today>dueDate?'⚠️ Atrasada':'Pendente'}</div></div>
       </div>`;
     });
-    vaccHtml += '</div></div>';
+    vaccHtml+='</div></div>';
   });
-  const vis = p.visits || { v1: { done: false, date: '', obs: '' }, v2: { done: false, date: '', obs: '' } };
-  const d30 = new Date(new Date(p.dob + 'T12:00:00').getTime() + 30 * 86400000).toISOString().slice(0, 10);
-  const visitHtml = `<div class="visit-section">
-    <div class="visit-title">🏠 Visitas domiciliares</div>
-    <div class="visit-grid">
-      <div class="visit-card">
-        <div class="visit-label">1ª Visita — até 30 dias</div>
-        <div style="font-size:12px;color:var(--s500)">Prazo: até ${fmtDate(d30)}</div>
-        <div class="visit-status-row">
-          <input type="checkbox" class="visit-check" id="v1done" ${vis.v1.done ? 'checked' : ''} onchange="saveVisit('${p.id}','v1','done',this.checked)">
-          <label for="v1done" style="font-size:13px;font-weight:600;cursor:pointer">${vis.v1.done ? '<span class=\'visit-done-badge\'>✅ Realizada</span>' : '<span class=\'visit-pending-badge\'>⏳ Pendente</span>'}</label>
-          <input type="date" class="visit-date-input" value="${vis.v1.date || ''}" onchange="saveVisit('${p.id}','v1','date',this.value)" style="max-width:160px">
-        </div>
-        <textarea class="visit-obs" placeholder="Observações..." onchange="saveVisit('${p.id}','v1','obs',this.value)">${vis.v1.obs || ''}</textarea>
-      </div>
-      <div class="visit-card">
-        <div class="visit-label">2ª Visita — 30 dias a 6 meses</div>
-        <div style="font-size:12px;color:var(--s500)">Período: 1 a 6 meses de vida</div>
-        <div class="visit-status-row">
-          <input type="checkbox" class="visit-check" id="v2done" ${vis.v2.done ? 'checked' : ''} onchange="saveVisit('${p.id}','v2','done',this.checked)">
-          <label for="v2done" style="font-size:13px;font-weight:600;cursor:pointer">${vis.v2.done ? '<span class=\'visit-done-badge\'>✅ Realizada</span>' : '<span class=\'visit-pending-badge\'>⏳ Pendente</span>'}</label>
-          <input type="date" class="visit-date-input" value="${vis.v2.date || ''}" onchange="saveVisit('${p.id}','v2','date',this.value)" style="max-width:160px">
-        </div>
-        <textarea class="visit-obs" placeholder="Observações..." onchange="saveVisit('${p.id}','v2','obs',this.value)">${vis.v2.obs || ''}</textarea>
-      </div>
-    </div>
-  </div>`;
-  container.innerHTML = `<div class="card">
+  container.innerHTML=`<div class="card">
     <div class="dhead">
       <div class="dav">${initials(p.name)}</div>
       <div style="flex:1">
         <div class="dname">${p.name}</div>
-        <div class="dsub">Cód: ${p.code || '—'} · Nasc: ${fmtDate(p.dob)} · ${ageStr(p.dob)}${p.address ? '<br>📍 ' + p.address : ''}</div>
+        <div class="dsub">Cód: ${p.code||'—'} · Nasc: ${fmtDate(p.dob)} · ${ageStr(p.dob)}${p.address?'<br>📍 '+p.address:''}</div>
         <div class="dpct">${s.pct}% vacinado</div>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
@@ -1251,24 +1164,16 @@ function openPatientDetail(pid) {
       </div>
     </div>
     <div style="padding:16px">
-      ${visitHtml}
       <div class="sec-label">💉 Vacinas</div>
       ${vaccHtml}
     </div>
   </div>`;
 }
-
-function closeDetail() {
-  detailPid = null;
-  // Restaura a barra de filtros
-  const filterBar = document.getElementById('patientsFilterBar');
-  if (filterBar) filterBar.style.display = 'flex';
-  
-  // Limpa o container de detalhes e reexibe a lista
-  const container = document.getElementById('tab-pacientes');
-  container.innerHTML = `
+function closeDetail(){
+  detailPid=null;
+  document.getElementById('tab-pacientes').innerHTML=`
     <div class="card">
-      <div class="filter-bar" id="patientsFilterBar" style="display:flex">
+      <div class="filter-bar">
         <input type="text" placeholder="🔍 Buscar nome ou código..." id="searchInp" oninput="renderPatients()" style="flex:1;min-width:180px">
         <select id="filterStatus" onchange="renderPatients()">
           <option value="">Todos</option>
@@ -1280,12 +1185,6 @@ function closeDetail() {
       <div id="patientsList"></div>
     </div>`;
   renderPatients();
-}
-// ===================== VISIT =====================
-function saveVisit(pid,vkey,field,val) {
-  const p=appData.find(x=>x.id===pid); if(!p) return;
-  if(!p.visits) p.visits={v1:{done:false,date:'',obs:''},v2:{done:false,date:'',obs:''}};
-  p.visits[vkey][field]=val; save(); toast('✅ Visita salva!'); updateHeader();
 }
 
 // ===================== VACCINE MODAL =====================
@@ -1394,8 +1293,7 @@ function clearNewForm(){ ['nc-code','nc-dob','nc-name','nc-addr'].forEach(id=>do
 
 // ===================== LATE =====================
 function renderLate() {
-  let late=appData.filter(p=>isLate(p));
-  late = sortByAddress(late);
+  const late=appData.filter(p=>isLate(p)).sort((a,b)=>getLateVaccines(b).length-getLateVaccines(a).length);
   const container=document.getElementById('lateList');
   if(!late.length){ container.innerHTML='<div class="empty">🎉 Nenhum paciente com vacinas atrasadas!</div>'; return; }
   container.innerHTML=`<div style="font-size:13px;color:var(--s600);font-weight:600;margin-bottom:10px;padding:4px 0">${late.length} paciente(s) com atraso</div>`+
@@ -1409,56 +1307,19 @@ function renderLate() {
     }).join('');
 }
 
-// ===================== VISITAS =====================
-function renderVisitasList() {
-  const container=document.getElementById('visitasList');
-  const pending=sortByAddress(appData.filter(p=>!(p.visits?.v1?.done&&p.visits?.v2?.done)));
-  const done=sortByAddress(appData.filter(p=>p.visits?.v1?.done&&p.visits?.v2?.done));
-  let html=`<div class="card"><div class="card-head"><div class="card-title">⏳ Visitas pendentes (${pending.length})</div></div><div>`;
-  pending.forEach(p=>{
-    const vis=p.visits||{v1:{done:false,date:'',obs:''},v2:{done:false,date:'',obs:''}};
-    html+=`<div class="person-row" onclick="switchTab('pacientes');setTimeout(()=>openPatientDetail('${p.id}'),50)">
-      <div class="pav">${initials(p.name)}</div>
-      <div style="flex:1;min-width:0"><div class="pname">${p.name}</div><div class="pmeta">${ageStr(p.dob)} · ${p.address||'—'}</div></div>
-      <div class="pright">
-        <span class="badge ${vis.v1.done?'bg-g':'bg-am'}">V1${vis.v1.done?'✅':'⏳'}</span>
-        <span class="badge ${vis.v2.done?'bg-g':'bg-am'}">V2${vis.v2.done?'✅':'⏳'}</span>
-      </div>
-    </div>`;
-  });
-  if(!pending.length) html+='<div class="empty">🎉 Todas as visitas realizadas!</div>';
-  html+='</div></div>';
-  if(done.length) {
-    html+=`<div class="card"><div class="card-head"><div class="card-title">✅ Visitas concluídas (${done.length})</div></div><div>`;
-    done.forEach(p=>{
-      html+=`<div class="person-row" onclick="switchTab('pacientes');setTimeout(()=>openPatientDetail('${p.id}'),50)">
-        <div class="pav">${initials(p.name)}</div>
-        <div style="flex:1;min-width:0"><div class="pname">${p.name}</div><div class="pmeta">${ageStr(p.dob)} · ${p.address||'—'}</div></div>
-        <div class="pright"><span class="badge bg-g">✅ Completo</span></div>
-      </div>`;
-    });
-    html+='</div></div>';
-  }
-  container.innerHTML=html;
-}
-
 // ===================== RELATÓRIO =====================
 function renderRelatorio() {
   if(!appData.length){ document.getElementById('relatorioContent').innerHTML='<div class="empty">Nenhum paciente cadastrado</div>'; return; }
-  const sorted = sortByAddress(appData);
   let html=`<table style="width:100%;border-collapse:collapse;font-size:13px">
     <thead><tr style="background:#1e293b;color:#fff">
       <th style="padding:9px 12px;text-align:left">Nome</th>
       <th style="padding:9px 12px;text-align:left">Cód</th>
       <th style="padding:9px 12px;text-align:left">Nasc.</th>
       <th style="padding:9px 12px;text-align:left">Idade</th>
-      <th style="padding:9px 12px;text-align:left">Endereço</th>
       <th style="padding:9px 12px;text-align:center">Cobertura</th>
       <th style="padding:9px 12px;text-align:center">Atrasadas</th>
-      <th style="padding:9px 12px;text-align:center">V1</th>
-      <th style="padding:9px 12px;text-align:center">V2</th>
     </tr></thead><tbody>`;
-  sorted.forEach((p,i)=>{
+  appData.forEach((p,i)=>{
     const s=calcStats(p); const lv=getLateVaccines(p);
     const bg=i%2===0?'#fff':'#f8fafc';
     html+=`<tr style="background:${bg}">
@@ -1466,11 +1327,8 @@ function renderRelatorio() {
       <td style="padding:8px 12px;font-family:'JetBrains Mono',monospace">${p.code||'—'}</td>
       <td style="padding:8px 12px;font-family:'JetBrains Mono',monospace">${fmtDate(p.dob)}</td>
       <td style="padding:8px 12px">${ageStr(p.dob)}</td>
-      <td style="padding:8px 12px;font-size:12px">${p.address||'—'}</td>
       <td style="padding:8px 12px;text-align:center"><span style="font-weight:700;color:${s.pct>=80?'#059669':'#dc2626'}">${s.pct}%</span></td>
       <td style="padding:8px 12px;text-align:center">${lv.length>0?`<span style="color:#dc2626;font-weight:700">${lv.length}</span>`:'<span style="color:#059669">—</span>'}</td>
-      <td style="padding:8px 12px;text-align:center">${p.visits?.v1?.done?'✅':'⏳'}</td>
-      <td style="padding:8px 12px;text-align:center">${p.visits?.v2?.done?'✅':'⏳'}</td>
     </tr>`;
   });
   html+='</tbody></table>';
@@ -1478,17 +1336,16 @@ function renderRelatorio() {
 }
 function exportExcel() {
   const wb=XLSX.utils.book_new();
-  const sorted = sortByAddress(appData);
-  const rows=[['Nome','Código','Nasc.','Idade','Endereço','Cobertura%','Atrasadas','V1','V2']];
-  sorted.forEach(p=>{
+  const rows=[['Nome','Código','Nasc.','Idade','Cobertura%','Atrasadas','Endereço']];
+  appData.forEach(p=>{
     const s=calcStats(p),lv=getLateVaccines(p);
-    rows.push([p.name,p.code||'',fmtDate(p.dob),ageStr(p.dob),p.address||'',s.pct+'%',lv.length,p.visits?.v1?.done?'Sim':'Não',p.visits?.v2?.done?'Sim':'Não']);
+    rows.push([p.name,p.code||'',fmtDate(p.dob),ageStr(p.dob),s.pct+'%',lv.length,p.address||'']);
   });
   const ws=XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols']=[{wch:36},{wch:14},{wch:12},{wch:8},{wch:36},{wch:10},{wch:10},{wch:6},{wch:6}];
+  ws['!cols']=[{wch:36},{wch:14},{wch:12},{wch:8},{wch:10},{wch:10},{wch:36}];
   XLSX.utils.book_append_sheet(wb,ws,'Pacientes');
   const vrows=[['Paciente','Código','Vacina','Período','Prazo','Aplicada','Data Aplicação','N/A']];
-  sorted.forEach(p=>{
+  appData.forEach(p=>{
     (p.vaccines||[]).forEach(v=>{
       vrows.push([p.name,p.code||'',v.name,v.period,fmtDate(addMonths(p.dob,v.months)),v.applied?'Sim':'Não',v.applied?fmtDate(v.date):'',v.na?'Sim':'Não']);
     });
@@ -1501,15 +1358,14 @@ function exportExcel() {
 function exportPDF() {
   const {jsPDF}=window.jspdf;
   const doc=new jsPDF('l','mm','a4');
-  const sorted = sortByAddress(appData);
   doc.setFontSize(16); doc.setFont('helvetica','bold');
   doc.text(`Relatório de Vacinação — ${currentUser.name}`,15,18);
   doc.setFontSize(10); doc.setFont('helvetica','normal');
   doc.text(`Área ${currentUser.area} · Micro ${currentUser.micro} · ${new Date().toLocaleDateString('pt-BR')}`,15,25);
   doc.autoTable({
     startY:32,
-    head:[['Nome','Código','Nasc.','Idade','Endereço','Cobertura','Atrasadas','V1','V2']],
-    body:sorted.map(p=>{ const s=calcStats(p),lv=getLateVaccines(p); return [p.name,p.code||'',fmtDate(p.dob),ageStr(p.dob),p.address||'',s.pct+'%',lv.length,p.visits?.v1?.done?'Sim':'Não',p.visits?.v2?.done?'Sim':'Não']; }),
+    head:[['Nome','Código','Nasc.','Idade','Cobertura','Atrasadas']],
+    body:appData.map(p=>{ const s=calcStats(p),lv=getLateVaccines(p); return [p.name,p.code||'',fmtDate(p.dob),ageStr(p.dob),s.pct+'%',lv.length]; }),
     styles:{fontSize:9},headStyles:{fillColor:[15,23,42]}
   });
   doc.save(`relatorio_${currentUser.name.replace(' ','_')}.pdf`);
@@ -1544,11 +1400,6 @@ function renderAdmin() {
     const pct=uTotal>0?Math.round(uApplied/uTotal*100):0;
     return {u,data,uLate,uTotal,uApplied,pct};
   });
-  document.getElementById('adminHeroStats').innerHTML=`
-    <div class="admin-hero-stat"><div class="n">${acsUsers.length}</div><div class="l">ACS Ativos</div></div>
-    <div class="admin-hero-stat"><div class="n">${total}</div><div class="l">Total Pacientes</div></div>
-    <div class="admin-hero-stat"><div class="n">${late}</div><div class="l">Com Atraso</div></div>
-  `;
   const adminTab=document.getElementById('tab-admin');
   adminTab.innerHTML=`
     <div class="admin-hero">
@@ -1556,7 +1407,7 @@ function renderAdmin() {
         <div class="admin-hero-title">🔐 Painel do Administrador</div>
         <div class="admin-hero-sub">Visão geral de todos os ACS e seus pacientes</div>
       </div>
-      <div class="admin-hero-stats" id="adminHeroStats">
+      <div class="admin-hero-stats">
         <div class="admin-hero-stat"><div class="n">${acsUsers.length}</div><div class="l">ACS Ativos</div></div>
         <div class="admin-hero-stat"><div class="n">${total}</div><div class="l">Total Pacientes</div></div>
         <div class="admin-hero-stat"><div class="n">${late}</div><div class="l">Com Atraso</div></div>
@@ -1606,9 +1457,8 @@ function renderAdminACSPanel(u) {
   data.forEach(p=>{ const s=calcStats(p); allApplied+=s.applied; allTotal+=s.total; if(s.late>0)lateCount++; });
   const pct=allTotal>0?Math.round(allApplied/allTotal*100):0;
 
-  const sorted = sortByAddress(data);
   const grouped={};
-  sorted.forEach(p=>{ const addr=p.address?p.address.split(',')[0].trim().toUpperCase():'SEM ENDEREÇO'; if(!grouped[addr])grouped[addr]=[]; grouped[addr].push(p); });
+  data.forEach(p=>{ const addr=p.address?p.address.split(',')[0].trim().toUpperCase():'SEM ENDEREÇO'; if(!grouped[addr])grouped[addr]=[]; grouped[addr].push(p); });
   let listHtml='';
   if(!data.length) listHtml='<div class="empty">Nenhum paciente cadastrado</div>';
   Object.keys(grouped).sort().forEach(addr=>{
@@ -1708,40 +1558,13 @@ function openAdminPatientDetail(pid) {
       if(v.na){cls2='na';dotCls='na';}
       else if(v.applied){cls2='ok';dotCls='ok';}
       else if(today>dueDate){cls2='late';dotCls='late';}
-      vaccHtml+=`<div class="vac-item ${cls2}" onclick="openVacModal('${p.id}',${v._vi},true)">
+      vaccHtml+=`<div class="vac-item ${cls2}" onclick="openVacModal(${JSON.stringify(p.id).replace(/"/g,'&quot;')},${v._vi},true)">
         <div class="vac-dot ${dotCls}"></div>
         <div><div class="vac-name">${v.name}</div><div class="vac-date">${v.applied?fmtDate(v.date):v.na?'N/A':today>dueDate?'⚠️ Atrasada':'Pendente'}</div></div>
       </div>`;
     });
     vaccHtml+='</div></div>';
   });
-  const vis=p.visits||{v1:{done:false,date:'',obs:''},v2:{done:false,date:'',obs:''}};
-  const d30=new Date(new Date(p.dob+'T12:00:00').getTime()+30*86400000).toISOString().slice(0,10);
-  const visitHtml=`<div class="visit-section">
-    <div class="visit-title">🏠 Visitas domiciliares</div>
-    <div class="visit-grid">
-      <div class="visit-card">
-        <div class="visit-label">1ª Visita — até 30 dias</div>
-        <div style="font-size:12px;color:var(--s500)">Prazo: até ${fmtDate(d30)}</div>
-        <div class="visit-status-row">
-          <input type="checkbox" class="visit-check" id="av1done" ${vis.v1.done?'checked':''} onchange="saveAdminVisit('${p.id}','v1','done',this.checked)">
-          <label for="av1done" style="font-size:13px;font-weight:600;cursor:pointer">${vis.v1.done?'<span class=\'visit-done-badge\'>✅ Realizada</span>':'<span class=\'visit-pending-badge\'>⏳ Pendente</span>'}</label>
-          <input type="date" class="visit-date-input" value="${vis.v1.date||''}" onchange="saveAdminVisit('${p.id}','v1','date',this.value)" style="max-width:160px">
-        </div>
-        <textarea class="visit-obs" placeholder="Observações..." onchange="saveAdminVisit('${p.id}','v1','obs',this.value)">${vis.v1.obs||''}</textarea>
-      </div>
-      <div class="visit-card">
-        <div class="visit-label">2ª Visita — 30 dias a 6 meses</div>
-        <div style="font-size:12px;color:var(--s500)">Período: 1 a 6 meses de vida</div>
-        <div class="visit-status-row">
-          <input type="checkbox" class="visit-check" id="av2done" ${vis.v2.done?'checked':''} onchange="saveAdminVisit('${p.id}','v2','done',this.checked)">
-          <label for="av2done" style="font-size:13px;font-weight:600;cursor:pointer">${vis.v2.done?'<span class=\'visit-done-badge\'>✅ Realizada</span>':'<span class=\'visit-pending-badge\'>⏳ Pendente</span>'}</label>
-          <input type="date" class="visit-date-input" value="${vis.v2.date||''}" onchange="saveAdminVisit('${p.id}','v2','date',this.value)" style="max-width:160px">
-        </div>
-        <textarea class="visit-obs" placeholder="Observações..." onchange="saveAdminVisit('${p.id}','v2','obs',this.value)">${vis.v2.obs||''}</textarea>
-      </div>
-    </div>
-  </div>`;
   document.getElementById('tab-admin').innerHTML=`<div class="card">
     <div class="dhead">
       <div class="dav">${initials(p.name)}</div>
@@ -1756,22 +1579,12 @@ function openAdminPatientDetail(pid) {
       </div>
     </div>
     <div style="padding:16px">
-      ${visitHtml}
       <div class="sec-label">💉 Vacinas — clique para editar</div>
       ${vaccHtml}
     </div>
   </div>`;
 }
 
-function saveAdminVisit(pid,vkey,field,val) {
-  const p=adminViewData.find(x=>x.id===pid); if(!p) return;
-  if(!p.visits) p.visits={v1:{done:false,date:'',obs:''},v2:{done:false,date:'',obs:''}};
-  p.visits[vkey][field]=val;
-  saveUserData(adminViewUserId,adminViewData);
-  toast('✅ Visita salva!');
-}
-
-let adminPatEdit=null;
 function openAdminNewPatient() {
   adminPatEdit=null;
   document.getElementById('patModalTitle').textContent='Novo paciente';
@@ -1781,7 +1594,7 @@ function openAdminNewPatient() {
   document.getElementById('patModal').classList.add('open');
 }
 
-let adminImportRaw=[],adminImportHeader=[];
+let adminImportRaw=[],adminImportHeader=[],adminImportPreMapped=false;
 function handleAdminFile(file) {
   if(!file) return;
   const ext=file.name.split('.').pop().toLowerCase();
@@ -1799,10 +1612,6 @@ function readAdminSpreadsheet(file) {
     showAdminImportMap(adminImportHeader,adminImportRaw);
   };
   reader.readAsArrayBuffer(file);
-}
-function autoMap(header) {
-  const find=(kws)=>{ for(const k of kws){ const i=header.findIndex(h=>String(h).toLowerCase().includes(k)); if(i>=0)return i; } return -1; };
-  return {code:find(['código','codigo','cod','code','matricula']),name:find(['nome','name','criança','paciente']),dob:find(['nascimento','nasc','data de nasc','birth','data']),addr:find(['endereço','endereco','address','rua'])};
 }
 function showAdminImportMap(header,rows) {
   const am=autoMap(header);
@@ -1858,11 +1667,15 @@ function confirmAdminImport() {
   renderAdminACSPanel();
 }
 function resetAdminImport() {
-  adminImportRaw=[]; adminImportHeader=[];
-  document.getElementById('adminImportMapSection').style.display='none';
-  document.getElementById('adminImportPreview').innerHTML='';
-  document.getElementById('adminImportBtns').style.display='none';
-  document.getElementById('adminImportFile').value='';
+  adminImportRaw=[]; adminImportHeader=[]; adminImportPreMapped=false;
+  const ms=document.getElementById('adminImportMapSection');
+  const pb=document.getElementById('adminImportPreview');
+  const ab=document.getElementById('adminImportBtns');
+  const af=document.getElementById('adminImportFile');
+  if(ms) ms.style.display='none';
+  if(pb) pb.innerHTML='';
+  if(ab) ab.style.display='none';
+  if(af) af.value='';
 }
 
 function openManageUsers() {
@@ -1892,8 +1705,6 @@ function saveUserEdit(uid) {
   if(pin.length!==4||!/^\d{4}$/.test(pin)){ toast('PIN deve ter 4 dígitos numéricos','error'); return; }
   Object.assign(u,{name:name||u.name,pin,area:area||u.area,micro:micro||u.micro});
   saveUsers(); toast(`✅ ${u.name} atualizado!`);
-  // Update login screen in case we are still on it
-  initLoginScreen();
 }
 
 // ===================== IMPORT =====================
@@ -1914,6 +1725,10 @@ function readSpreadsheet(file) {
     showImportMap(importHeader,importRaw);
   };
   reader.readAsArrayBuffer(file);
+}
+function autoMap(header) {
+  const find=(kws)=>{ for(const k of kws){ const i=header.findIndex(h=>String(h).toLowerCase().includes(k)); if(i>=0)return i; } return -1; };
+  return {code:find(['código','codigo','cod','code','matricula']),name:find(['nome','name','criança','paciente']),dob:find(['nascimento','nasc','data de nasc','birth','data']),addr:find(['endereço','endereco','address','rua'])};
 }
 function showImportMap(header,rows,preMapped=false) {
   const am=autoMap(header);
@@ -2017,13 +1832,11 @@ initLoginScreen();
 <div id="pwaStatus"><div class="pwa-dot"></div><span id="pwaStatusText">App instalado</span></div>
 
 <script>
-// ===================== SERVICE WORKER REGISTRATION =====================
+// Service Worker, PWA install, offline detection, etc. (mantido igual ao original)
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
       const reg = await navigator.serviceWorker.register('./sw.js', { scope: './' });
-      console.log('SW registered:', reg.scope);
-
       reg.addEventListener('updatefound', () => {
         const newWorker = reg.installing;
         newWorker.addEventListener('statechange', () => {
@@ -2039,15 +1852,12 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// ===================== PWA INSTALL PROMPT =====================
 let deferredPrompt = null;
 const banner = document.getElementById('pwaInstallBanner');
 const installBtn = document.getElementById('pwaInstallBtn');
 const dismissBtn = document.getElementById('pwaDismissBtn');
-
 const dismissed = localStorage.getItem('pwa_banner_dismissed');
-const installed = window.matchMedia('(display-mode: standalone)').matches ||
-                  window.navigator.standalone === true;
+const installed = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
@@ -2090,9 +1900,7 @@ function hidePwaStatus() {
   document.getElementById('pwaStatus').style.display = 'none';
 }
 
-// ===================== ONLINE / OFFLINE DETECTION =====================
 const offlineBar = document.getElementById('offlineBar');
-
 function updateOnlineStatus() {
   if (!navigator.onLine) {
     offlineBar.classList.add('show');
@@ -2100,20 +1908,17 @@ function updateOnlineStatus() {
     offlineBar.classList.remove('show');
   }
 }
-
 window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 updateOnlineStatus();
 
-// ===================== HANDLE SHORTCUT DEEP LINKS =====================
 window.addEventListener('DOMContentLoaded', () => {
   const hash = location.hash.replace('#','');
-  if (hash && ['atrasados','cadastrar','pacientes','dashboard','visitas','relatorio'].includes(hash)) {
+  if (hash && ['atrasados','cadastrar','pacientes','dashboard','relatorio'].includes(hash)) {
     window._deepLinkTab = hash;
   }
 });
 
-// ===================== STANDALONE MODE UI TWEAKS =====================
 if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
   document.documentElement.classList.add('pwa-standalone');
   document.addEventListener('DOMContentLoaded', () => {
@@ -2122,15 +1927,12 @@ if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.
   });
 }
 
-// ===================== WAKE LOCK (keep screen on while using) =====================
 let wakeLock = null;
 async function requestWakeLock() {
   if ('wakeLock' in navigator) {
     try {
       wakeLock = await navigator.wakeLock.request('screen');
-    } catch (err) {
-      // Not critical
-    }
+    } catch (err) {}
   }
 }
 document.addEventListener('visibilitychange', async () => {
