@@ -679,6 +679,9 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-xl btn-sm" onclick="exportExcel()">📊 Excel</button>
         <button class="btn btn-pdf btn-sm" onclick="exportPDF()">📄 PDF</button>
+        <button class="btn btn-indigo btn-sm" onclick="exportVacinasJSON()">💾 Exportar Vacinas</button>
+        <button class="btn btn-blue btn-sm" onclick="document.getElementById('importVacinasFile').click()">📂 Importar Vacinas</button>
+        <input type="file" id="importVacinasFile" accept=".json" style="display:none" onchange="importVacinasJSON(this.files[0])">
       </div>
     </div>
     <div id="relatorioContent" style="padding:16px"></div>
@@ -1366,6 +1369,84 @@ function exportPDF() {
   toast('📄 PDF exportado!');
 }
 
+// ===================== EXPORT/IMPORT VACINAS JSON =====================
+function exportVacinasJSON() {
+  if(!appData.length){ toast('Nenhum paciente para exportar','error'); return; }
+  const payload = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    acs: { id: currentUser.id, name: currentUser.name, area: currentUser.area, micro: currentUser.micro },
+    patients: appData
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const date = new Date().toLocaleDateString('pt-BR').replace(/\//g,'-');
+  a.download = `vacinas_${currentUser.name.replace(/\s+/g,'_')}_${date}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast(`💾 Arquivo exportado com ${appData.length} paciente(s)!`);
+}
+
+function importVacinasJSON(file) {
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const payload = JSON.parse(e.target.result);
+      // Aceita objeto com .patients ou array direto
+      const patients = Array.isArray(payload) ? payload : (payload.patients || []);
+      if(!patients.length){ toast('Arquivo vazio ou inválido','error'); return; }
+
+      // Mostra modal de confirmação com prévia
+      const existing = appData.length;
+      const novos = patients.filter(p => !appData.find(x => x.id === p.id || (p.code && x.code === p.code))).length;
+      const atualizar = patients.length - novos;
+
+      const confirmMsg = `📂 Arquivo lido com sucesso!\n\n` +
+        `• ${patients.length} paciente(s) no arquivo\n` +
+        `• ${novos} novo(s) serão adicionados\n` +
+        `• ${atualizar} já existente(s) (serão atualizados)\n\n` +
+        `Deseja continuar a importação?`;
+
+      if(!confirm(confirmMsg)) {
+        document.getElementById('importVacinasFile').value = '';
+        return;
+      }
+
+      // Merge: atualiza existentes, adiciona novos
+      let added = 0, updated = 0;
+      patients.forEach(p => {
+        // Garante que cada paciente tenha todas as vacinas do VACC_META
+        if(!p.vaccines || !p.vaccines.length) {
+          p.vaccines = VACC_META.map(mv=>({name:mv.name,months:mv.months,period:mv.period,status:'',date:'',applied:false,na:false}));
+        } else {
+          // Adiciona vacinas faltantes mantendo as existentes
+          VACC_META.forEach(mv => {
+            const exists = p.vaccines.find(v => v.name === mv.name);
+            if(!exists) p.vaccines.push({name:mv.name,months:mv.months,period:mv.period,status:'',date:'',applied:false,na:false});
+          });
+        }
+        // Tenta encontrar pelo id ou código
+        const idx = appData.findIndex(x => x.id === p.id || (p.code && x.code === p.code));
+        if(idx >= 0) { appData[idx] = {...appData[idx], ...p}; updated++; }
+        else { appData.push(p); added++; }
+      });
+
+      save();
+      renderAll();
+      document.getElementById('importVacinasFile').value = '';
+      toast(`✅ Importado! ${added} adicionado(s), ${updated} atualizado(s).`, 'success', 5000);
+      switchTab('pacientes');
+    } catch(err) {
+      toast('❌ Erro ao ler arquivo. Certifique-se que é um JSON válido.','error');
+      console.error(err);
+    }
+  };
+  reader.readAsText(file);
+}
+
 // ===================== CFG =====================
 function openCfg(){ document.getElementById('cfg-area').value=currentUser.area; document.getElementById('cfg-micro').value=currentUser.micro; document.getElementById('cfg-acs').value=currentUser.name; document.getElementById('cfgOv').classList.add('open'); }
 function closeCfg(){ document.getElementById('cfgOv').classList.remove('open'); }
@@ -1483,6 +1564,7 @@ function renderAdminACSPanel(u) {
         <div><div style="font-weight:800;font-size:16px">${u.name}</div><div style="font-size:12px;color:var(--s500);font-family:'JetBrains Mono',monospace">Área ${u.area} · Micro ${u.micro}</div></div>
       </div>
       <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-indigo btn-sm" onclick="exportAdminVacinasJSON('${u.id}','${u.name}')">💾 Exportar Vacinas</button>
         <div style="background:#fff;border:1px solid var(--s200);border-radius:10px;padding:8px 16px;text-align:center">
           <div style="font-size:20px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--g)">${pct}%</div>
           <div style="font-size:10px;color:var(--s400);text-transform:uppercase;letter-spacing:.4px">Cobertura</div>
@@ -1801,6 +1883,27 @@ function baixarTemplate() {
   XLSX.utils.book_append_sheet(wb,ws,'Cadastros');
   XLSX.writeFile(wb,'modelo_vacinacao.xlsx');
   toast('📥 Modelo baixado!');
+}
+
+function exportAdminVacinasJSON(uid, uname) {
+  const data = uid === adminViewUserId ? adminViewData : [];
+  if(!data.length){ toast('Nenhum paciente para exportar','error'); return; }
+  const u = users.find(x => x.id === uid) || {name: uname, area:'—', micro:'—'};
+  const payload = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    acs: { id: uid, name: u.name, area: u.area, micro: u.micro },
+    patients: data
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const date = new Date().toLocaleDateString('pt-BR').replace(/\//g,'-');
+  a.download = `vacinas_${(u.name||uname).replace(/\s+/g,'_')}_${date}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast(`💾 ${data.length} paciente(s) exportado(s)!`);
 }
 
 // ===================== INIT =====================
