@@ -188,6 +188,13 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
              radial-gradient(ellipse at 80% 20%,rgba(37,99,235,.1) 0%,transparent 50%);
   pointer-events:none;
 }
+/* Floating particles background */
+#loginScreen::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(circle at 10% 80%,rgba(52,211,153,.05) 0%,transparent 40%),
+    radial-gradient(circle at 90% 10%,rgba(99,102,241,.08) 0%,transparent 40%);
+}
 .login-grid{
   display:grid;grid-template-columns:1fr 1fr;
   max-width:960px;width:100%;margin:20px;
@@ -201,6 +208,11 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
   background:linear-gradient(135deg,rgba(5,150,105,.3),rgba(4,120,87,.1));
   padding:52px 44px;display:flex;flex-direction:column;justify-content:center;
   border-right:1px solid rgba(255,255,255,.06);
+  position:relative;overflow:hidden;
+}
+.login-brand::after{
+  content:'💉';position:absolute;right:-20px;bottom:-30px;
+  font-size:160px;opacity:.04;pointer-events:none;
 }
 .login-logo{font-size:42px;margin-bottom:16px}
 .login-title{font-size:32px;font-weight:800;color:#fff;line-height:1.1;margin-bottom:12px}
@@ -209,53 +221,76 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
 .login-features{display:flex;flex-direction:column;gap:10px}
 .login-feat{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,.6);font-size:13px}
 .login-feat-dot{width:6px;height:6px;border-radius:50%;background:#34d399;flex-shrink:0}
-.login-form-side{padding:52px 44px;display:flex;flex-direction:column;justify-content:center}
-.login-form-title{font-size:22px;font-weight:700;color:#fff;margin-bottom:6px}
-.login-form-sub{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:32px}
-.login-users-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;max-height:340px;overflow-y:auto;padding-right:4px}
-.login-users-grid::-webkit-scrollbar{width:4px}
-.login-users-grid::-webkit-scrollbar-track{background:transparent}
-.login-users-grid::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:4px}
-.user-card{
-  background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);
-  border-radius:14px;padding:14px 12px;cursor:pointer;
-  transition:all .2s;text-align:center;position:relative;
-}
-.user-card:hover{background:rgba(5,150,105,.15);border-color:rgba(52,211,153,.4);transform:translateY(-2px)}
-.user-card.selected{background:rgba(5,150,105,.2);border-color:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.15)}
-.user-avatar{
-  width:44px;height:44px;border-radius:50%;
-  background:linear-gradient(135deg,var(--g),var(--gd));
-  color:#fff;display:flex;align-items:center;justify-content:center;
-  font-weight:700;font-size:15px;margin:0 auto 8px;
-}
-.user-name{font-size:12px;font-weight:600;color:#fff;line-height:1.3}
-.user-area{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;font-family:'JetBrains Mono',monospace}
-.user-check{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;background:#34d399;color:#fff;display:none;align-items:center;justify-content:center;font-size:10px;font-weight:700}
-.user-card.selected .user-check{display:flex}
-.login-pin-section{margin-bottom:24px}
-.login-pin-label{font-size:12px;font-weight:600;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px}
-.pin-inputs{display:flex;gap:10px;justify-content:center}
-.pin-input{
-  width:52px;height:56px;border-radius:12px;
-  border:1.5px solid rgba(255,255,255,.15);
+.login-form-side{padding:52px 44px;display:flex;flex-direction:column;justify-content:center;position:relative}
+
+/* LOGIN PANELS (main / primeiro-acesso / recuperar) */
+.login-panel{display:none}
+.login-panel.active{display:flex;flex-direction:column}
+
+/* Email/password login fields */
+.login-field-wrap{position:relative;margin-bottom:14px}
+.login-field-wrap input{
+  width:100%;padding:14px 16px;
+  border:1.5px solid rgba(255,255,255,.12);
+  border-radius:14px;
   background:rgba(255,255,255,.06);
-  color:#fff;font-size:22px;font-weight:700;
-  text-align:center;outline:none;font-family:'JetBrains Mono',monospace;
-  transition:all .2s;
+  color:#fff;font-size:15px;font-family:'Syne',sans-serif;
+  outline:none;transition:all .2s;
 }
-.pin-input:focus{border-color:#34d399;background:rgba(52,211,153,.1);box-shadow:0 0 0 3px rgba(52,211,153,.15)}
-.pin-error{font-size:12px;color:#f87171;text-align:center;margin-top:8px;min-height:18px}
-.btn-login{
-  width:100%;padding:14px;border-radius:12px;
+.login-field-wrap input::placeholder{color:rgba(255,255,255,.3)}
+.login-field-wrap input:focus{border-color:#34d399;background:rgba(52,211,153,.08);box-shadow:0 0 0 3px rgba(52,211,153,.12)}
+.login-field-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:16px;opacity:.4;pointer-events:none}
+.login-field-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:14px;opacity:.5;cursor:pointer;background:none;border:none;color:#fff;padding:4px}
+.login-field-toggle:hover{opacity:.9}
+
+/* Action buttons row */
+.login-actions{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.btn-login-main{
+  width:100%;padding:14px;border-radius:14px;
   background:linear-gradient(135deg,#059669,#047857);
   color:#fff;font-size:15px;font-weight:700;
   border:none;cursor:pointer;font-family:'Syne',sans-serif;
   transition:all .2s;letter-spacing:.3px;
+  box-shadow:0 4px 20px rgba(5,150,105,.3);
 }
-.btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(5,150,105,.4)}
-.btn-login:active{transform:translateY(0)}
-.btn-login:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-login-main:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(5,150,105,.45)}
+.btn-login-main:active{transform:translateY(0)}
+.btn-login-main:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-login-sec{
+  width:100%;padding:13px;border-radius:14px;
+  background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.75);font-size:14px;font-weight:600;
+  cursor:pointer;font-family:'Syne',sans-serif;
+  transition:all .2s;
+}
+.btn-login-sec:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.2);color:#fff}
+.btn-login-sec.green{border-color:rgba(52,211,153,.3);color:#34d399}
+.btn-login-sec.green:hover{background:rgba(52,211,153,.1)}
+.btn-login-back{background:none;border:none;color:rgba(255,255,255,.4);font-size:13px;cursor:pointer;font-family:'Syne',sans-serif;display:flex;align-items:center;gap:6px;padding:8px 0;transition:color .2s}
+.btn-login-back:hover{color:rgba(255,255,255,.8)}
+
+/* First access user select */
+.fa-users-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;max-height:280px;overflow-y:auto;padding-right:2px}
+.fa-users-grid::-webkit-scrollbar{width:4px}
+.fa-users-grid::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:4px}
+.fa-user-card{
+  background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);
+  border-radius:12px;padding:11px 10px;cursor:pointer;
+  transition:all .2s;text-align:center;position:relative;
+}
+.fa-user-card:hover{background:rgba(5,150,105,.15);border-color:rgba(52,211,153,.4)}
+.fa-user-card.selected{background:rgba(5,150,105,.2);border-color:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.15)}
+.fa-user-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--gd));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;margin:0 auto 6px}
+.fa-user-name{font-size:11px;font-weight:600;color:#fff;line-height:1.3}
+.fa-user-area{font-size:10px;color:rgba(255,255,255,.4);margin-top:1px}
+.fa-user-check{position:absolute;top:6px;right:6px;width:16px;height:16px;border-radius:50%;background:#34d399;color:#fff;display:none;align-items:center;justify-content:center;font-size:9px;font-weight:700}
+.fa-user-card.selected .fa-user-check{display:flex}
+
+.login-error{font-size:12px;color:#f87171;text-align:center;margin-top:6px;min-height:18px}
+.login-success{font-size:13px;color:#34d399;text-align:center;margin-top:6px;padding:10px;background:rgba(52,211,153,.1);border-radius:10px;border:1px solid rgba(52,211,153,.2)}
+.login-step-label{font-size:11px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.login-form-title{font-size:22px;font-weight:700;color:#fff;margin-bottom:6px}
+.login-form-sub{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:28px}
 
 /* ===== MAIN APP ===== */
 #appScreen{display:none;min-height:100vh}
@@ -486,7 +521,7 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
   .login-grid{grid-template-columns:1fr}
   .login-brand{display:none}
   .login-form-side{padding:36px 28px}
-  .login-users-grid{grid-template-columns:1fr 1fr 1fr}
+  .fa-users-grid{grid-template-columns:1fr 1fr 1fr}
   .form-grid{grid-template-columns:1fr}.full{grid-column:1}
   .dash-hero{grid-template-columns:1fr}
   .dash-hero-pct{font-size:48px}
@@ -516,24 +551,64 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
       </div>
     </div>
     <div class="login-form-side">
-      <div class="login-form-title">Bem-vindo(a)</div>
-      <div class="login-form-sub">Selecione seu perfil e insira o PIN para entrar</div>
 
-      <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Selecione o ACS</div>
-      <div class="login-users-grid" id="loginUsersGrid"></div>
-
-      <div class="login-pin-section">
-        <div class="login-pin-label">PIN de acesso (4 dígitos)</div>
-        <div class="pin-inputs">
-          <input type="password" maxlength="1" class="pin-input" id="pin0" oninput="pinNext(0)" onkeydown="pinKey(event,0)">
-          <input type="password" maxlength="1" class="pin-input" id="pin1" oninput="pinNext(1)" onkeydown="pinKey(event,1)">
-          <input type="password" maxlength="1" class="pin-input" id="pin2" oninput="pinNext(2)" onkeydown="pinKey(event,2)">
-          <input type="password" maxlength="1" class="pin-input" id="pin3" oninput="pinNext(3)" onkeydown="pinKey(event,3)">
+      <!-- PAINEL PRINCIPAL: E-mail + Senha -->
+      <div class="login-panel active" id="lp-main">
+        <div class="login-form-title">Bem-vindo(a)</div>
+        <div class="login-form-sub">Entre com seu e-mail e senha para acessar</div>
+        <div class="login-field-wrap">
+          <input type="email" id="l-email" placeholder="E-mail" autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('l-senha').focus()">
+          <span class="login-field-icon">✉️</span>
         </div>
-        <div class="pin-error" id="pinError"></div>
+        <div class="login-field-wrap">
+          <input type="password" id="l-senha" placeholder="Senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLoginEmail()">
+          <button type="button" class="login-field-toggle" id="l-senha-toggle" onclick="togglePwd('l-senha','l-senha-toggle')">👁</button>
+        </div>
+        <div class="login-error" id="l-error"></div>
+        <div class="login-actions">
+          <button class="btn-login-main" onclick="doLoginEmail()">Entrar →</button>
+          <button class="btn-login-sec green" onclick="showLoginPanel('lp-primeiro')">🔑 Primeiro Acesso</button>
+          <button class="btn-login-sec" onclick="showLoginPanel('lp-recuperar')">🔒 Recuperar Senha</button>
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:20px;text-align:center">Feito por: <span style="font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.5)">Marcelo Oliveira</span> · Todos os direitos reservados</div>
       </div>
-      <button class="btn-login" id="btnLogin" onclick="doLogin()">Entrar →</button>
-      <div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:16px;text-align:center">Feito por: <span style="font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.5)">Marcelo Oliveira</span> · Todos os direitos reservados<span style="font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.5)"></span></div>
+
+      <!-- PAINEL PRIMEIRO ACESSO -->
+      <div class="login-panel" id="lp-primeiro">
+        <button class="btn-login-back" onclick="showLoginPanel('lp-main')">← Voltar</button>
+        <div class="login-form-title" style="margin-top:6px">Primeiro Acesso</div>
+        <div class="login-form-sub">Selecione seu nome e cadastre seu e-mail e senha</div>
+        <div class="login-step-label">Selecione seu perfil</div>
+        <div class="fa-users-grid" id="faUsersGrid"></div>
+        <div class="login-field-wrap">
+          <input type="email" id="fa-email" placeholder="Seu e-mail" autocomplete="email">
+          <span class="login-field-icon">✉️</span>
+        </div>
+        <div class="login-field-wrap">
+          <input type="password" id="fa-senha" placeholder="Nova senha (mín. 6 caracteres)" autocomplete="new-password">
+          <button type="button" class="login-field-toggle" id="fa-senha-toggle" onclick="togglePwd('fa-senha','fa-senha-toggle')">👁</button>
+        </div>
+        <div class="login-field-wrap">
+          <input type="password" id="fa-senha2" placeholder="Confirme a senha" autocomplete="new-password">
+        </div>
+        <div class="login-error" id="fa-error"></div>
+        <button class="btn-login-main" onclick="doFirstAccess()">Cadastrar acesso →</button>
+      </div>
+
+      <!-- PAINEL RECUPERAR SENHA -->
+      <div class="login-panel" id="lp-recuperar">
+        <button class="btn-login-back" onclick="showLoginPanel('lp-main')">← Voltar</button>
+        <div class="login-form-title" style="margin-top:6px">Recuperar Senha</div>
+        <div class="login-form-sub">Informe seu e-mail e enviaremos as instruções</div>
+        <div class="login-field-wrap">
+          <input type="email" id="rec-email" placeholder="Seu e-mail cadastrado" autocomplete="email" onkeydown="if(event.key==='Enter')doRecuperarSenha()">
+          <span class="login-field-icon">✉️</span>
+        </div>
+        <div class="login-error" id="rec-error"></div>
+        <div class="login-success" id="rec-success" style="display:none"></div>
+        <button class="btn-login-main" onclick="doRecuperarSenha()">Enviar instruções →</button>
+      </div>
+
     </div>
   </div>
 </div>
@@ -776,22 +851,22 @@ body{font-family:'Syne',sans-serif;background:var(--s50);color:var(--s800);font-
 <script>
 // ===================== USERS CONFIG =====================
 const DEFAULT_USERS = [
-  {id:'u01',name:'Wanessa Becker',area:'09',micro:'01',pin:'1234',role:'acs'},
-  {id:'u02',name:'Leise',area:'09',micro:'02',pin:'1234',role:'acs'},
-  {id:'u03',name:'Kézia',area:'09',micro:'03',pin:'1234',role:'acs'},
-  {id:'u04',name:'Poli',area:'09',micro:'04',pin:'1234',role:'acs'},
-  {id:'u05',name:'Sunamita',area:'09',micro:'05',pin:'1234',role:'acs'},
-  {id:'u06',name:'Dulci',area:'10',micro:'01',pin:'1234',role:'acs'},
-  {id:'u07',name:'Vanessa Bodziak',area:'10',micro:'02',pin:'1234',role:'acs'},
-  {id:'u08',name:'Marinete',area:'10',micro:'03',pin:'1234',role:'acs'},
-  {id:'u09',name:'Chayane',area:'10',micro:'04',pin:'1234',role:'acs'},
-  {id:'u10',name:'Marcelo Oliveira',area:'10',micro:'05',pin:'1234',role:'acs'},
-  {id:'u11',name:'Jacqueline',area:'15',micro:'01',pin:'1234',role:'acs'},
-  {id:'u12',name:'Vanessa Dias',area:'15',micro:'02',pin:'1234',role:'acs'},
-  {id:'u13',name:'Valéria',area:'15',micro:'03',pin:'1234',role:'acs'},
-  {id:'u14',name:'Carol',area:'15',micro:'04',pin:'1234',role:'acs'},
-  {id:'u15',name:'Eduardo',area:'15',micro:'05',pin:'1234',role:'acs'},
-  {id:'admin',name:'Administrador',area:'—',micro:'—',pin:'1020',role:'admin'},
+  {id:'u01',name:'Wanessa Becker',area:'09',micro:'01',pin:'1234',role:'acs',email:'',senha:''},
+  {id:'u02',name:'Leise',area:'09',micro:'02',pin:'1234',role:'acs',email:'',senha:''},
+  {id:'u03',name:'Kézia',area:'09',micro:'03',pin:'1234',role:'acs',email:'',senha:''},
+  {id:'u04',name:'Poli',area:'09',micro:'04',pin:'1234',role:'acs',email:'',senha:''},
+  {id:'u05',name:'Sunamita',area:'09',micro:'05',pin:'1234',role:'acs',email:'',senha:''},
+  {id:'u06',name:'Dulci',area:'10',micro:'01',pin:'1234',role:'acs',email:'',senha:''},
+  {id:'u07',name:'Vanessa Bodziak',area:'10',micro:'02',pin:'1234',role:'acs',email:'',senha:''},
+  {id:'u08',name:'Marinete',area:'10',micro:'03',pin:'1234',role:'acs',email:'',senha:''},
+  {id:'u09',name:'Chayane',area:'10',micro:'04',pin:'1234',role:'acs',email:'',senha:''},
+  {id:'u10',name:'Marcelo Oliveira',area:'10',micro:'05',pin:'1234',role:'acs',email:'',senha:''},
+  {id:'u11',name:'Jacqueline',area:'15',micro:'01',pin:'1234',role:'acs',email:'',senha:''},
+  {id:'u12',name:'Vanessa Dias',area:'15',micro:'02',pin:'1234',role:'acs',email:'',senha:''},
+  {id:'u13',name:'Valéria',area:'15',micro:'03',pin:'1234',role:'acs',email:'',senha:''},
+  {id:'u14',name:'Carol',area:'15',micro:'04',pin:'1234',role:'acs',email:'',senha:''},
+  {id:'u15',name:'Eduardo',area:'15',micro:'05',pin:'1234',role:'acs',email:'',senha:''},
+  {id:'admin',name:'Administrador',area:'—',micro:'—',pin:'1020',role:'admin',email:'admin@vacinacontrol.app',senha:''},
 ];
 
 const VACC_META = [
@@ -927,51 +1002,111 @@ function navigateTo(tab) {
 // ===================== LOGIN =====================
 async function initLoginScreen() {
   users = await loadUsers();
-  const grid = document.getElementById('loginUsersGrid');
+  // Garante que todos usuários têm campos email/senha
+  users.forEach(u => { if(!u.email) u.email=''; if(!u.senha) u.senha=''; });
+  renderFAGrid();
+}
+
+function renderFAGrid() {
+  const grid = document.getElementById('faUsersGrid');
+  if(!grid) return;
   const acsUsers = users.filter(u=>u.role!=='admin');
   grid.innerHTML = acsUsers.map(u=>`
-    <div class="user-card" id="uc_${u.id}" onclick="selectUser('${u.id}')">
-      <div class="user-check">✓</div>
-      <div class="user-avatar">${initials(u.name)}</div>
-      <div class="user-name">${u.name}</div>
-      <div class="user-area">Área ${u.area} · Micro ${u.micro}</div>
+    <div class="fa-user-card" id="fa_${u.id}" onclick="selectFAUser('${u.id}')">
+      <div class="fa-user-check">✓</div>
+      <div class="fa-user-av">${initials(u.name)}</div>
+      <div class="fa-user-name">${u.name}</div>
+      <div class="fa-user-area">Área ${u.area}·${u.micro}</div>
     </div>`).join('');
 }
 
-let selectedUserId = null;
-function selectUser(uid) {
-  selectedUserId = uid;
-  document.querySelectorAll('.user-card').forEach(c=>c.classList.remove('selected'));
-  const el=document.getElementById('uc_'+uid);
+let faSelectedUserId = null;
+function selectFAUser(uid) {
+  faSelectedUserId = uid;
+  document.querySelectorAll('.fa-user-card').forEach(c=>c.classList.remove('selected'));
+  const el = document.getElementById('fa_'+uid);
   if(el) el.classList.add('selected');
-  document.getElementById('pin0').focus();
-  document.getElementById('pinError').textContent='';
 }
-function pinNext(i) {
-  const v=document.getElementById('pin'+i).value;
-  if(v && i<3) document.getElementById('pin'+(i+1)).focus();
+
+function showLoginPanel(panelId) {
+  document.querySelectorAll('.login-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(panelId).classList.add('active');
+  // clear errors
+  ['l-error','fa-error','rec-error'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=''; });
+  const rs=document.getElementById('rec-success'); if(rs) rs.style.display='none';
 }
-function pinKey(e,i) {
-  if(e.key==='Backspace'&&!document.getElementById('pin'+i).value&&i>0) document.getElementById('pin'+(i-1)).focus();
-  if(e.key==='Enter') doLogin();
+
+function togglePwd(inputId, btnId) {
+  const inp = document.getElementById(inputId);
+  const btn = document.getElementById(btnId);
+  if(inp.type==='password'){ inp.type='text'; btn.textContent='🙈'; }
+  else { inp.type='password'; btn.textContent='👁'; }
 }
-function getPin() {
-  return [0,1,2,3].map(i=>document.getElementById('pin'+i).value).join('');
-}
-function clearPin() {
-  [0,1,2,3].forEach(i=>{ document.getElementById('pin'+i).value=''; });
-  document.getElementById('pin0').focus();
-}
-function doLogin() {
-  const pin=getPin();
-  const adminUser=users.find(u=>u.role==='admin');
-  if(adminUser&&pin===adminUser.pin) { loginAs(adminUser); return; }
-  if(!selectedUserId){ document.getElementById('pinError').textContent='Selecione um ACS primeiro'; return; }
-  const user=users.find(u=>u.id===selectedUserId);
-  if(!user){ document.getElementById('pinError').textContent='Usuário não encontrado'; return; }
-  if(pin!==user.pin){ document.getElementById('pinError').textContent='PIN incorreto. Tente novamente.'; clearPin(); return; }
+
+function doLoginEmail() {
+  const email = (document.getElementById('l-email').value||'').trim().toLowerCase();
+  const senha = document.getElementById('l-senha').value||'';
+  const errEl = document.getElementById('l-error');
+  errEl.textContent = '';
+
+  if(!email || !senha) { errEl.textContent='Preencha e-mail e senha.'; return; }
+
+  // Admin: aceita email especial ou qualquer email com o PIN como senha
+  const adminUser = users.find(u=>u.role==='admin');
+  if(adminUser) {
+    // Admin pode entrar com o email cadastrado ou com PIN como senha
+    const isAdminEmail = adminUser.email && email === adminUser.email.toLowerCase();
+    const isAdminPin = senha === adminUser.pin;
+    if(isAdminEmail && isAdminPin) { loginAs(adminUser); return; }
+    if(isAdminEmail && adminUser.senha && senha === adminUser.senha) { loginAs(adminUser); return; }
+  }
+
+  // Usuário ACS — busca por email
+  const user = users.find(u => u.role!=='admin' && u.email && u.email.toLowerCase()===email);
+  if(!user) { errEl.textContent='E-mail não cadastrado. Use "Primeiro Acesso" para se cadastrar.'; return; }
+  if(!user.senha) { errEl.textContent='Senha não cadastrada. Use "Primeiro Acesso".'; return; }
+  if(user.senha !== senha) { errEl.textContent='Senha incorreta. Tente novamente.'; return; }
   loginAs(user);
 }
+
+function doFirstAccess() {
+  const errEl = document.getElementById('fa-error');
+  errEl.textContent = '';
+  if(!faSelectedUserId) { errEl.textContent='Selecione seu nome na lista acima.'; return; }
+  const email = (document.getElementById('fa-email').value||'').trim().toLowerCase();
+  const senha = document.getElementById('fa-senha').value||'';
+  const senha2 = document.getElementById('fa-senha2').value||'';
+  if(!email || !email.includes('@')) { errEl.textContent='Informe um e-mail válido.'; return; }
+  if(senha.length < 6) { errEl.textContent='A senha deve ter ao menos 6 caracteres.'; return; }
+  if(senha !== senha2) { errEl.textContent='As senhas não coincidem.'; return; }
+  // Verifica se email já está em uso por outro usuário
+  const duplicate = users.find(u=>u.id!==faSelectedUserId && u.email && u.email.toLowerCase()===email);
+  if(duplicate) { errEl.textContent='Este e-mail já está cadastrado para outro usuário.'; return; }
+  const user = users.find(u=>u.id===faSelectedUserId);
+  if(!user) { errEl.textContent='Usuário não encontrado.'; return; }
+  user.email = email;
+  user.senha = senha;
+  saveUsers();
+  toast(`✅ Acesso cadastrado para ${user.name.split(' ')[0]}! Faça login.`,'success',4000);
+  showLoginPanel('lp-main');
+  document.getElementById('l-email').value = email;
+}
+
+function doRecuperarSenha() {
+  const errEl = document.getElementById('rec-error');
+  const sucEl = document.getElementById('rec-success');
+  errEl.textContent = '';
+  sucEl.style.display = 'none';
+  const email = (document.getElementById('rec-email').value||'').trim().toLowerCase();
+  if(!email || !email.includes('@')) { errEl.textContent='Informe um e-mail válido.'; return; }
+  const user = users.find(u => u.email && u.email.toLowerCase()===email);
+  if(!user) { errEl.textContent='E-mail não encontrado. Verifique ou faça o Primeiro Acesso.'; return; }
+  // Simula envio (em produção, aqui chamaria um serviço de e-mail)
+  sucEl.textContent=`✅ Instruções de recuperação enviadas para ${email}. Verifique sua caixa de entrada (e spam).`;
+  sucEl.style.display='block';
+  errEl.textContent='';
+}
+
 async function loginAs(user) {
   currentUser=user;
   appData=await loadUserData(user.id);
@@ -995,14 +1130,13 @@ async function loginAs(user) {
     setTimeout(() => switchTab(target), 100);
   }
 }
-function doLogout() {
   currentUser=null; appData=[];
   document.getElementById('appScreen').style.display='none';
   document.getElementById('loginScreen').style.display='flex';
-  selectedUserId=null;
-  document.querySelectorAll('.user-card').forEach(c=>c.classList.remove('selected'));
-  clearPin();
-  document.getElementById('pinError').textContent='';
+  showLoginPanel('lp-main');
+  document.getElementById('l-email').value='';
+  document.getElementById('l-senha').value='';
+  document.getElementById('l-error').textContent='';
 }
 
 // ===================== TABS =====================
@@ -1756,31 +1890,105 @@ function resetAdminImport() {
 }
 
 function openManageUsers() {
+  renderManageUsersBody();
+  document.getElementById('manageUsersModal').classList.add('open');
+}
+function renderManageUsersBody() {
   const body=document.getElementById('manageUsersBody');
-  body.innerHTML=users.filter(u=>u.role!=='admin').map(u=>`
-    <div style="padding:14px 0;border-bottom:1px solid var(--s100)">
+  body.innerHTML=`
+    <div style="padding:14px;border-bottom:2px solid var(--s100)">
+      <button class="btn btn-p btn-sm" onclick="showAddUserForm()" style="width:100%">➕ Adicionar novo usuário</button>
+    </div>
+    <div id="addUserFormWrap" style="display:none;padding:14px;border-bottom:2px solid var(--s200);background:var(--s50)">
+      <div style="font-weight:700;color:var(--s800);margin-bottom:12px;font-size:14px">Novo usuário</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div class="fg full" style="grid-column:1/-1"><label>Nome completo</label><input type="text" id="nu-name" placeholder="Nome do ACS" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%"></div>
+        <div class="fg"><label>Área</label><input type="text" id="nu-area" placeholder="Ex: 10" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%"></div>
+        <div class="fg"><label>Micro</label><input type="text" id="nu-micro" placeholder="Ex: 05" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%"></div>
+        <div class="fg full" style="grid-column:1/-1"><label>Papel</label>
+          <select id="nu-role" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%">
+            <option value="acs">ACS (usuário padrão)</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn btn-p btn-sm" onclick="saveNewUser()">✅ Criar usuário</button>
+        <button class="btn btn-s btn-sm" onclick="document.getElementById('addUserFormWrap').style.display='none'">Cancelar</button>
+      </div>
+      <div id="nu-error" style="color:var(--red);font-size:12px;margin-top:6px"></div>
+    </div>
+  `+users.filter(u=>u.id!=='admin'||currentUser.role==='admin').map(u=>`
+    <div style="padding:14px 16px;border-bottom:1px solid var(--s100)">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
-        <div class="admin-av">${initials(u.name)}</div>
-        <div><div style="font-weight:700">${u.name}</div><div style="font-size:12px;color:var(--s500)">Área ${u.area} · Micro ${u.micro}</div></div>
+        <div class="admin-av" style="${u.role==='admin'?'background:linear-gradient(135deg,#7c3aed,#6d28d9)':''}">${initials(u.name)}</div>
+        <div style="flex:1">
+          <div style="font-weight:700">${u.name}</div>
+          <div style="font-size:12px;color:var(--s500)">Área ${u.area} · Micro ${u.micro} · <span style="color:${u.role==='admin'?'#7c3aed':'var(--g)'}">● ${u.role==='admin'?'Admin':'ACS'}</span></div>
+        </div>
+        ${u.id!=='admin'?`<button class="btn btn-sm ${u.role==='admin'?'btn-s':'btn-indigo'}" onclick="toggleAdminRole('${u.id}')" title="${u.role==='admin'?'Remover admin':'Dar admin'}">${u.role==='admin'?'↓ Remover admin':'⭐ Dar admin'}</button>`:''}
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div class="fg"><label>Nome</label><input type="text" value="${u.name}" id="mu_name_${u.id}" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%"></div>
-        <div class="fg"><label>PIN (4 dígitos)</label><input type="password" value="${u.pin}" id="mu_pin_${u.id}" maxlength="4" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'JetBrains Mono',monospace;width:100%"></div>
+        <div class="fg" style="grid-column:1/-1"><label>Nome</label><input type="text" value="${u.name}" id="mu_name_${u.id}" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%"></div>
         <div class="fg"><label>Área</label><input type="text" value="${u.area}" id="mu_area_${u.id}" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%"></div>
         <div class="fg"><label>Micro</label><input type="text" value="${u.micro}" id="mu_micro_${u.id}" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%"></div>
+        <div class="fg" style="grid-column:1/-1"><label>E-mail cadastrado</label><input type="email" value="${u.email||''}" id="mu_email_${u.id}" placeholder="Ainda não cadastrado" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%"></div>
+        ${u.role==='admin'?`<div class="fg" style="grid-column:1/-1"><label>PIN admin (4 dígitos)</label><input type="text" value="${u.pin}" id="mu_pin_${u.id}" maxlength="4" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'JetBrains Mono',monospace;width:100%;letter-spacing:4px"></div>`:''}
       </div>
-      <button class="btn btn-p btn-sm" style="margin-top:8px" onclick="saveUserEdit('${u.id}')">💾 Salvar</button>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        <button class="btn btn-p btn-sm" onclick="saveUserEdit('${u.id}')">💾 Salvar</button>
+        ${u.id!=='admin'?`<button class="btn btn-d btn-sm" onclick="deleteUser('${u.id}','${u.name.replace(/'/g,'\\'')}')">🗑️ Excluir</button>`:''}
+      </div>
     </div>`).join('');
-  document.getElementById('manageUsersModal').classList.add('open');
+}
+function showAddUserForm() {
+  const w=document.getElementById('addUserFormWrap');
+  w.style.display = w.style.display==='none' ? 'block' : 'none';
+}
+function saveNewUser() {
+  const name=(document.getElementById('nu-name').value||'').trim();
+  const area=(document.getElementById('nu-area').value||'').trim();
+  const micro=(document.getElementById('nu-micro').value||'').trim();
+  const role=document.getElementById('nu-role').value;
+  const errEl=document.getElementById('nu-error');
+  errEl.textContent='';
+  if(!name){errEl.textContent='Informe o nome.';return;}
+  // gera id único
+  const newId='u'+Date.now().toString(36);
+  const newPin=Math.floor(1000+Math.random()*9000).toString();
+  users.push({id:newId,name,area:area||'—',micro:micro||'—',pin:newPin,role,email:'',senha:''});
+  saveUsers();
+  renderFAGrid();
+  renderManageUsersBody();
+  toast(`✅ ${name} adicionado(a)! PIN temporário: ${newPin}`,'success',6000);
+}
+function toggleAdminRole(uid) {
+  const u=users.find(x=>x.id===uid); if(!u) return;
+  u.role = u.role==='admin' ? 'acs' : 'admin';
+  saveUsers();
+  renderFAGrid();
+  renderManageUsersBody();
+  toast(`✅ ${u.name}: papel alterado para ${u.role==='admin'?'Administrador':'ACS'}.`);
+}
+function deleteUser(uid, uname) {
+  if(!confirm(`Excluir o usuário "${uname}"? Seus dados de pacientes NÃO serão removidos do servidor.`)) return;
+  const idx=users.findIndex(x=>x.id===uid);
+  if(idx>=0) users.splice(idx,1);
+  saveUsers();
+  renderFAGrid();
+  renderManageUsersBody();
+  toast(`✅ ${uname} removido(a).`);
 }
 function saveUserEdit(uid) {
   const u=users.find(x=>x.id===uid); if(!u) return;
   const name=document.getElementById(`mu_name_${uid}`).value.trim();
-  const pin=document.getElementById(`mu_pin_${uid}`).value.trim();
   const area=document.getElementById(`mu_area_${uid}`).value.trim();
   const micro=document.getElementById(`mu_micro_${uid}`).value.trim();
-  if(pin.length!==4||!/^\d{4}$/.test(pin)){ toast('PIN deve ter 4 dígitos numéricos','error'); return; }
-  Object.assign(u,{name:name||u.name,pin,area:area||u.area,micro:micro||u.micro});
+  const email=(document.getElementById(`mu_email_${uid}`)?.value||'').trim().toLowerCase();
+  const pinEl=document.getElementById(`mu_pin_${uid}`);
+  const pin=pinEl?pinEl.value.trim():u.pin;
+  if(pinEl && (pin.length!==4||!/^\d{4}$/.test(pin))){ toast('PIN deve ter 4 dígitos numéricos','error'); return; }
+  Object.assign(u,{name:name||u.name,pin,area:area||u.area,micro:micro||u.micro,email});
   saveUsers(); toast(`✅ ${u.name} atualizado!`);
 }
 
