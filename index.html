@@ -46,6 +46,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <!-- External libs -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js">
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
@@ -1092,19 +1093,46 @@ function doFirstAccess() {
   document.getElementById('l-email').value = email;
 }
 
-function doRecuperarSenha() {
+// ===== EMAILJS CONFIG =====
+const EMAILJS_SERVICE  = 'service_bg8tabc';
+const EMAILJS_TEMPLATE = 'template_zdg8zkm';
+const EMAILJS_PUBKEY   = '9OlPU6wWfaebCY4d0';
+
+async function doRecuperarSenha() {
   const errEl = document.getElementById('rec-error');
   const sucEl = document.getElementById('rec-success');
+  const btn   = document.querySelector('#lp-recuperar .btn-login-main');
   errEl.textContent = '';
   sucEl.style.display = 'none';
+
   const email = (document.getElementById('rec-email').value||'').trim().toLowerCase();
   if(!email || !email.includes('@')) { errEl.textContent='Informe um e-mail válido.'; return; }
+
   const user = users.find(u => u.email && u.email.toLowerCase()===email);
   if(!user) { errEl.textContent='E-mail não encontrado. Verifique ou faça o Primeiro Acesso.'; return; }
-  // Simula envio (em produção, aqui chamaria um serviço de e-mail)
-  sucEl.textContent=`✅ Instruções de recuperação enviadas para ${email}. Verifique sua caixa de entrada (e spam).`;
-  sucEl.style.display='block';
-  errEl.textContent='';
+  if(!user.senha) { errEl.textContent='Este usuário ainda não definiu uma senha. Use "Primeiro Acesso".'; return; }
+
+  // Feedback visual de carregamento
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  try {
+    emailjs.init(EMAILJS_PUBKEY);
+    await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+      to_name:  user.name,
+      to_email: user.email,
+      senha:    user.senha,
+    });
+    sucEl.textContent = '✅ E-mail enviado para ' + user.email + '. Verifique sua caixa de entrada (e spam).';
+    sucEl.style.display = 'block';
+    document.getElementById('rec-email').value = '';
+  } catch(err) {
+    console.error('EmailJS error:', err);
+    errEl.textContent = '❌ Falha ao enviar e-mail. Verifique sua conexão e tente novamente.';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Enviar instruções →';
+  }
 }
 
 async function loginAs(user) {
@@ -1130,6 +1158,7 @@ async function loginAs(user) {
     setTimeout(() => switchTab(target), 100);
   }
 }
+function doLogout() {
   currentUser=null; appData=[];
   document.getElementById('appScreen').style.display='none';
   document.getElementById('loginScreen').style.display='flex';
@@ -1895,6 +1924,41 @@ function openManageUsers() {
 }
 function renderManageUsersBody() {
   const body=document.getElementById('manageUsersBody');
+  const rows = users.filter(u=>u.id!=='admin'||currentUser.role==='admin').map(u=>{
+    const isAdmin = u.role==='admin';
+    const isFixed = u.id==='admin';
+    const adminToggleBtn = !isFixed
+      ? `<button class="btn btn-sm ${isAdmin?'btn-s':'btn-indigo'}" data-action="togglerole" data-uid="${u.id}">${isAdmin?'↓ Remover admin':'⭐ Dar admin'}</button>`
+      : '';
+    const pinField = isAdmin
+      ? `<div class="fg" style="grid-column:1/-1"><label>PIN admin (4 dígitos)</label><input type="text" value="${u.pin}" id="mu_pin_${u.id}" maxlength="4" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'JetBrains Mono',monospace;width:100%;letter-spacing:4px"></div>`
+      : '';
+    const deleteBtn = !isFixed
+      ? `<button class="btn btn-d btn-sm" data-action="deleteuser" data-uid="${u.id}">🗑️ Excluir</button>`
+      : '';
+    return `<div style="padding:14px 16px;border-bottom:1px solid var(--s100)">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <div class="admin-av" style="${isAdmin?'background:linear-gradient(135deg,#7c3aed,#6d28d9)':''}">${initials(u.name)}</div>
+        <div style="flex:1">
+          <div style="font-weight:700">${u.name}</div>
+          <div style="font-size:12px;color:var(--s500)">Área ${u.area} · Micro ${u.micro} · <span style="color:${isAdmin?'#7c3aed':'var(--g)'}">● ${isAdmin?'Admin':'ACS'}</span></div>
+        </div>
+        ${adminToggleBtn}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div class="fg" style="grid-column:1/-1"><label>Nome</label><input type="text" value="${u.name}" id="mu_name_${u.id}" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%"></div>
+        <div class="fg"><label>Área</label><input type="text" value="${u.area}" id="mu_area_${u.id}" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%"></div>
+        <div class="fg"><label>Micro</label><input type="text" value="${u.micro}" id="mu_micro_${u.id}" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%"></div>
+        <div class="fg" style="grid-column:1/-1"><label>E-mail cadastrado</label><input type="email" value="${u.email||''}" id="mu_email_${u.id}" placeholder="Ainda não cadastrado" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%"></div>
+        ${pinField}
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        <button class="btn btn-p btn-sm" data-action="saveedit" data-uid="${u.id}">💾 Salvar</button>
+        ${deleteBtn}
+      </div>
+    </div>`;
+  }).join('');
+
   body.innerHTML=`
     <div style="padding:14px;border-bottom:2px solid var(--s100)">
       <button class="btn btn-p btn-sm" onclick="showAddUserForm()" style="width:100%">➕ Adicionar novo usuário</button>
@@ -1902,10 +1966,10 @@ function renderManageUsersBody() {
     <div id="addUserFormWrap" style="display:none;padding:14px;border-bottom:2px solid var(--s200);background:var(--s50)">
       <div style="font-weight:700;color:var(--s800);margin-bottom:12px;font-size:14px">Novo usuário</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div class="fg full" style="grid-column:1/-1"><label>Nome completo</label><input type="text" id="nu-name" placeholder="Nome do ACS" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%"></div>
+        <div class="fg" style="grid-column:1/-1"><label>Nome completo</label><input type="text" id="nu-name" placeholder="Nome do ACS" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%"></div>
         <div class="fg"><label>Área</label><input type="text" id="nu-area" placeholder="Ex: 10" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%"></div>
         <div class="fg"><label>Micro</label><input type="text" id="nu-micro" placeholder="Ex: 05" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%"></div>
-        <div class="fg full" style="grid-column:1/-1"><label>Papel</label>
+        <div class="fg" style="grid-column:1/-1"><label>Papel</label>
           <select id="nu-role" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%">
             <option value="acs">ACS (usuário padrão)</option>
             <option value="admin">Administrador</option>
@@ -1918,28 +1982,21 @@ function renderManageUsersBody() {
       </div>
       <div id="nu-error" style="color:var(--red);font-size:12px;margin-top:6px"></div>
     </div>
-  `+users.filter(u=>u.id!=='admin'||currentUser.role==='admin').map(u=>`
-    <div style="padding:14px 16px;border-bottom:1px solid var(--s100)">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
-        <div class="admin-av" style="${u.role==='admin'?'background:linear-gradient(135deg,#7c3aed,#6d28d9)':''}">${initials(u.name)}</div>
-        <div style="flex:1">
-          <div style="font-weight:700">${u.name}</div>
-          <div style="font-size:12px;color:var(--s500)">Área ${u.area} · Micro ${u.micro} · <span style="color:${u.role==='admin'?'#7c3aed':'var(--g)'}">● ${u.role==='admin'?'Admin':'ACS'}</span></div>
-        </div>
-        ${u.id!=='admin'?`<button class="btn btn-sm ${u.role==='admin'?'btn-s':'btn-indigo'}" onclick="toggleAdminRole('${u.id}')" title="${u.role==='admin'?'Remover admin':'Dar admin'}">${u.role==='admin'?'↓ Remover admin':'⭐ Dar admin'}</button>`:''}
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div class="fg" style="grid-column:1/-1"><label>Nome</label><input type="text" value="${u.name}" id="mu_name_${u.id}" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%"></div>
-        <div class="fg"><label>Área</label><input type="text" value="${u.area}" id="mu_area_${u.id}" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%"></div>
-        <div class="fg"><label>Micro</label><input type="text" value="${u.micro}" id="mu_micro_${u.id}" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%"></div>
-        <div class="fg" style="grid-column:1/-1"><label>E-mail cadastrado</label><input type="email" value="${u.email||''}" id="mu_email_${u.id}" placeholder="Ainda não cadastrado" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'Syne',sans-serif;width:100%"></div>
-        ${u.role==='admin'?`<div class="fg" style="grid-column:1/-1"><label>PIN admin (4 dígitos)</label><input type="text" value="${u.pin}" id="mu_pin_${u.id}" maxlength="4" style="padding:7px 10px;border:1.5px solid var(--s300);border-radius:8px;font-size:13px;font-family:'JetBrains Mono',monospace;width:100%;letter-spacing:4px"></div>`:''}
-      </div>
-      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-        <button class="btn btn-p btn-sm" onclick="saveUserEdit('${u.id}')">💾 Salvar</button>
-        ${u.id!=='admin'?`<button class="btn btn-d btn-sm" onclick="deleteUser('${u.id}','${u.name.replace(/'/g,'\\'')}')">🗑️ Excluir</button>`:''}
-      </div>
-    </div>`).join('');
+    ${rows}`;
+
+  // Event delegation — avoids inline JS with user data that can break parsing
+  // Remove old listener before adding (store ref on element)
+  if(body._muHandler) body.removeEventListener('click', body._muHandler);
+  body._muHandler = function(e) {
+    const btn = e.target.closest('[data-action]');
+    if(!btn) return;
+    const uid = btn.dataset.uid;
+    const action = btn.dataset.action;
+    if(action==='saveedit') saveUserEdit(uid);
+    else if(action==='deleteuser') deleteUserConfirm(uid);
+    else if(action==='togglerole') toggleAdminRole(uid);
+  };
+  body.addEventListener('click', body._muHandler);
 }
 function showAddUserForm() {
   const w=document.getElementById('addUserFormWrap');
@@ -1970,14 +2027,16 @@ function toggleAdminRole(uid) {
   renderManageUsersBody();
   toast(`✅ ${u.name}: papel alterado para ${u.role==='admin'?'Administrador':'ACS'}.`);
 }
-function deleteUser(uid, uname) {
-  if(!confirm(`Excluir o usuário "${uname}"? Seus dados de pacientes NÃO serão removidos do servidor.`)) return;
+function deleteUserConfirm(uid) {
+  const u=users.find(x=>x.id===uid); if(!u) return;
+  const uname=u.name;
+  if(!confirm('Excluir o usuário "'+uname+'"? Seus dados de pacientes NÃO serão removidos do servidor.')) return;
   const idx=users.findIndex(x=>x.id===uid);
   if(idx>=0) users.splice(idx,1);
   saveUsers();
   renderFAGrid();
   renderManageUsersBody();
-  toast(`✅ ${uname} removido(a).`);
+  toast('✅ '+uname+' removido(a).');
 }
 function saveUserEdit(uid) {
   const u=users.find(x=>x.id===uid); if(!u) return;
@@ -2115,7 +2174,8 @@ function exportAdminVacinasJSON(uid, uname) {
 }
 
 // ===================== INIT =====================
-// initLoginScreen() é chamado pelo módulo Firebase após autenticação anônima
+// Expõe ao módulo Firebase (type="module" tem escopo isolado)
+window.initLoginScreen = initLoginScreen;
 </script>
 
 <!-- OFFLINE BAR -->
